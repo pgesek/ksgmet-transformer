@@ -59,3 +59,12 @@ typings/
 
 # next.js build output
 .next
+
+# Lambda package is in this dir
+dist
+
+# Visual Studio Code
+.vscode
+
+# AWS Credentials
+.aws-config.json

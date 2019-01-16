@@ -1,0 +1,32 @@
+{
+  "name": "ksgmet-transformer",
+  "version": "1.0.0-SNAPSHOT",
+  "description": "Data transformer function for KSG-Met",
+  "main": "src/index.js",
+  "scripts": {
+    "build-aws-resource": "mkdir -f dist && bestzip dist/ksgmet-transformer.zip src/ index.js node_modules/ LICENSE package.json",
+    "build-aws-resource-win": "pack.cmd",
+    "test": "jasmine spec/**/*_spec.js"
+  },
+  "author": "Paweł Gesek",
+  "license": "MIT",
+  "devDependencies": {
+    "bestzip": "^2.1.2",
+    "eslint": "^5.6.1",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-plugin-import": "^2.14.0",
+    "jasmine": "^3.2.0",
+    "mock-http-server": "^1.0.0"
+  },
+  "dependencies": {
+    "aws-sdk": "^2.339.0",
+    "del": "^3.0.0",
+    "dotenv": "^6.1.0",
+    "fstream": "^1.0.11",
+    "mkdir-recursive": "^0.4.0",
+    "moment-timezone": "0.5.21",
+    "node-fetch": "^2.2.0",
+    "targz": "^1.0.1",
+    "winston": "^3.1.0"
+  }
+}
