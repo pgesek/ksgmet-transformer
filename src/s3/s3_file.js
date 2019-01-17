@@ -24,8 +24,10 @@ class S3File {
                 }
 
                 store.saveFile(this.fileName, data.Body)
-                    .then(filePath => resolve(filePath))
-                    .catch(err => reject(err));
+                    .then(filePath => {
+                        this.filePath = filePath;
+                        resolve(filePath);
+                    }).catch(err => reject(err));
             });
         });
     }
