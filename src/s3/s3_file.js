@@ -35,6 +35,10 @@ class S3File {
     toString() {
         return `${this.bucketName}: ${this.path}/${this.fileName}`;
     }
+
+    fileNameNoExt() {
+        return this.fileName.replace(/\.[^/.]+$/, '');
+    }
 }
 
 module.exports = S3File;

@@ -2,6 +2,7 @@ const log = require('./util/log.js');
 const settings = require('./util/settings.js');
 const S3Directory = require('./s3/s3_directory.js');
 const FileStore = require('./files/file_store.js');
+const PredictionDir = require('./files/prediction_dir.js');
 
 class Transformer {
 
@@ -15,9 +16,14 @@ class Transformer {
         
         const files = await s3directory.listFiles();
 
-        await Promise.all(files.map(file => {
-            return file.fetch(this.store);
-        }));
+        await files.forEach(async s3file => {
+            await s3file.fetch(this.store);
+            
+            const predDir = await this.store.untar(s3file);
+
+            log.info('Created prediction directory: ' + 
+                predDir.filePath);
+        });
 
         log.info('Fetched directory: ' + directory);
     }
