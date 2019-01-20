@@ -39,6 +39,22 @@ class S3File {
     fileNameNoExt() {
         return this.fileName.replace(/\.[^/.]+$/, '');
     }
+
+    rmLocalFile() {
+        return new Promise((resolve, reject) => {
+            if (this.filePath) {
+                fs.unlink(this.filePath, err => {
+                    if (err) {
+                        reject(err);
+                    } else {
+                        resolve(true);
+                    }
+                })
+            } else {
+                resolve(false);
+            }
+        });
+    }
 }
 
 module.exports = S3File;

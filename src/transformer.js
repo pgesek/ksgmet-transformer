@@ -23,6 +23,8 @@ class Transformer {
 
             log.info('Created prediction directory: ' + 
                 predDir.filePath);
+
+            s3file.rmLocalFile();
         });
 
         log.info('Fetched directory: ' + directory);
