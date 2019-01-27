@@ -1,7 +1,7 @@
 const fs = require('fs');
 const os = require('os');
 const path = require('path');
-const DirReader = require('../../src/util/dir_reader.js');
+const DirReader = require('../../src/files/dir_reader.js');
 const del = require('del');
 
 describe('Directory Reader', () => {
@@ -26,10 +26,13 @@ describe('Directory Reader', () => {
         fs.mkdirSync(path.join(tmpDir, 'prognozy/CSV/poland/2018/10/26/1'));
         fs.mkdirSync(path.join(tmpDir, 'prognozy/CSV/poland/2018/10/26/2'));
         fs.mkdirSync(path.join(tmpDir, 'prognozy/CSV/poland/2018/10/26/3'));
+        fs.mkdirSync(path.join(tmpDir, 'prognozy/CSV/poland/2018/10/27'));
+        fs.mkdirSync(path.join(tmpDir, 'prognozy/CSV/poland/2018/10/27/1'));
+        fs.mkdirSync(path.join(tmpDir, 'prognozy/CSV/poland/2018/10/27/2'));
 
         const dirs = DirReader.recursivelyFindBottomDirs(
             path.join(tmpDir, 'prognozy/CSV/'));
 
-        expect(dirs.length).toEqual(3);
+        expect(dirs.length).toEqual(5);
     });
 });

@@ -25,6 +25,8 @@ class Transformer {
                 predDir.filePath);
 
             s3file.rmLocalFile();
+
+            const predictions = predDir.listPredictions();
         });
 
         log.info('Fetched directory: ' + directory);
