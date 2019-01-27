@@ -1,8 +1,6 @@
 const DirReader = require('./dir_reader.js');
 const Prediction = require('./prediction.js');
-
-const PL = 'pl_csv';
-const EUROPE_LONG = 'europe_long_csv';
+const PredictionType = require('../util/prediction_type.js');
 
 class PredictionDir {
      
@@ -16,11 +14,11 @@ class PredictionDir {
     }
 
     isPl() {
-        return this.filePath.indexOf(PL) >= 0;
+        return this.filePath.indexOf(PredictionType.PL.TAR_PREFIX) >= 0;
     }
 
     isEurope() {
-        return this.filePath.indexOf(EUROPE_LONG) >= 0;
+        return this.filePath.indexOf(PredictionType.EU.TAR_PREFIX) >= 0;
     }
 }
 

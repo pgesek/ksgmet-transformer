@@ -2,10 +2,9 @@ const path = require('path');
 const ModifiedDates = require('./modified_dates.js');
 const moment = require('moment-timezone');
 const settings = require('../util/settings.js');
+const PredictionType = require('../util/prediction_type.js');
 
 const CSV_PATH = `prognozy${path.sep}CSV${path.sep}`;
-const PL = 'poland';
-const EU = 'europe_long';
 const MODIFIED_DATES = 'modified_dates.json';
 
 class Prediction {
@@ -23,8 +22,8 @@ class Prediction {
         }
 
         const plOrEu = split[0];
-        this.isPl = plOrEu === PL;
-        this.isEu = plOrEu === EU;
+        this.isPl = plOrEu === PredictionType.PL.DIR_PATH;
+        this.isEu = plOrEu === PredictionType.EU.DIR_PATH;
 
         if (!this.isEu && !this.isPl) {
             throw 'Prediction must be either EU or PL. Invalid dir: ' +
