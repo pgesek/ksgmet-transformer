@@ -18,47 +18,60 @@ class S3Finder {
         const root = new S3Directory(this.bucketName, '');
         const dirs = await root.listDirectories();
 
-        let minDiff = null;
-        let bestDir = null;
+        const dirsByDiff = {};
         
-        await dirs.forEach(async s3Dir => {
+        await Promise.all(dirs.map(async s3Dir => {
             const dirName = s3Dir.path;
             const dirDt = parseDirDate(dirName);
             const diff = dateDiff(momentDate, dirDt);
 
             if (dirDt.isValid()) {
-                if (this._isAcceptableDiff(diff) &&
-                    (minDiff === null || diff < minDiff)) {
+                if (this._isAcceptableDiff(diff)) {
                     const containsExpected = await this._containsDay(
                         s3Dir, momentDate, predictionType);
                         
                     if (containsExpected) {
-                        log.debug('Switching best matching dir to ' + dirName);
-                        minDiff = diff;
-                        bestDir = dirName;
+                        log.debug(`Considering ${dirName} with ${diff}`);
+                        dirsByDiff[diff] = s3Dir;
                     }
                 }    
             } else {
                 log.warn(`Invalid directory in ${this.bucketName} bucket: ` +
                     dirName);
             }
-        });
+        }));
 
-        if (bestDir) {
-            log.info(`Found best matching directory for ${momentDate.format()}: ${bestDir}`);
-            return new S3Directory(bestDir);
+        log.info(`Found these matching dirs for ${momentDate.format()}: `
+            + JSON.stringify(dirsByDiff));
+
+        let bestDir = null;
+
+        if (dirsByDiff) {
+            let minDiff = null;
+            Object.keys(dirsByDiff).forEach(key => {
+                const diff = parseInt(key); 
+                if (minDiff === null || 
+                    Math.abs(diff) < Math.abs(minDiff)) {
+                    
+                    bestDir = dirsByDiff[key];
+                    minDiff = diff;
+                }
+            });
+
+            log.info(`Found best matching directory for ${momentDate.format()}: ${bestDir.path}`);
         } else {
             log.warn(`Didn't find any matching dir for ${momentDate.format()}`);
         }
-
+        
+        return bestDir;
     }
 
     async _containsDay(s3Dir, momentDate, predictionType) {
         const files = await s3Dir.listFiles();
 
         const expectedFileName = formatTarName(momentDate, predictionType);
-        const contains = false;
-        files.foreach(file => {
+        let contains = false;
+        files.forEach(file => {
             if (file.fileName === expectedFileName) {
                 contains = true;
             }
