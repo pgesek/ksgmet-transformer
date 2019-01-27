@@ -1,5 +1,7 @@
 const path = require('path');
 const ModifiedDates = require('./modified_dates.js');
+const moment = require('moment-timezone');
+const settings = require('../util/settings.js');
 
 const CSV_PATH = `prognozy${path.sep}CSV${path.sep}`;
 const PL = 'poland';
@@ -41,6 +43,11 @@ class Prediction {
 
         const modDatePath = path.join(this.dirPath, MODIFIED_DATES);
         this.modDates = new ModifiedDates(modDatePath);
+    }
+
+    getPredictionDate() {
+        const arr = [this.year, this.month - 1, this.day, this.hour];
+        return moment.tz(arr, settings.TIMEZONE);
     }
 }
 

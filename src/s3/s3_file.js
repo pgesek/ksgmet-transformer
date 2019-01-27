@@ -1,6 +1,4 @@
 const fs = require('fs');
-const path = require('path');
-const log = require('../util/log.js');
 
 class S3File {
     constructor(fileName, path, bucketName, s3ref) {

@@ -26,5 +26,7 @@ describe('Prediction', () => {
         expect(prediction.month).toEqual(10);
         expect(prediction.day).toEqual(30);
         expect(prediction.hour).toEqual(2);
+        expect(prediction.getPredictionDate().format())
+            .toEqual('2018-10-30T02:00:00+01:00');
     });
 });

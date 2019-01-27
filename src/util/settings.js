@@ -17,7 +17,9 @@ function getSetting(varName, defaultVal, isBoolean) {
 const settings = Object.freeze({
     S3_BUCKET_NAME: getSetting('S3_BUCKET_NAME', 'ksgmet'),
     
-    LOAD_AWS_CONFIG_FILE: getSetting('LOAD_AWS_CONFIG_FILE', false, true)
+    LOAD_AWS_CONFIG_FILE: getSetting('LOAD_AWS_CONFIG_FILE', false, true),
+
+    TIMEZONE: getSetting('TIMEZONE', 'Europe/Warsaw')
 });
 
 if (settings.LOAD_AWS_CONFIG_FILE) {
