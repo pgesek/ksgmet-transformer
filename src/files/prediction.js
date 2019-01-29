@@ -39,14 +39,16 @@ class Prediction {
             isNaN(this.hour)) {
             throw 'Cannot parse prediction date from: ' + this.dirPath;
         }
-
-        const modDatePath = path.join(this.dirPath, MODIFIED_DATES);
-        this.modDates = new ModifiedDates(modDatePath);
     }
 
     getPredictionDate() {
         const arr = [this.year, this.month - 1, this.day, this.hour];
         return moment.tz(arr, settings.TIMEZONE);
+    }
+
+    getModDates() {
+        const modDatePath = path.join(this.dirPath, MODIFIED_DATES);
+        return new ModifiedDates(modDatePath);
     }
 }
 

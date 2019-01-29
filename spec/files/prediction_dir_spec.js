@@ -1,8 +1,21 @@
 const PredictionDir = require('../../src/files/prediction_dir.js');
-const rewiremock = require('rewiremock/node');
+const del = require('del');
+const fs = require('fs');
+const os = require('os');
 const path = require('path');
+const rewiremock = require('rewiremock/node');
 
 describe('Predictdion Directory', () => {
+    let tmpDir;
+
+    beforeAll(() => {
+        tmpDir = fs.mkdtempSync(path.join(
+            os.tmpdir(), 'dir_reader_test'));
+    });
+
+    afterAll(async () => {
+        await del([tmpDir], { force: true});
+    });
 
     it('should identifyPlEuPredictions', () => {
         const pl_pred_dir = new PredictionDir(
@@ -42,8 +55,31 @@ describe('Predictdion Directory', () => {
             '../../src/files/prediction.js': class {} 
         }));
 
-        const pred_dir = new PredDirMocked();
+        const predDir = new PredDirMocked();
 
-        expect(pred_dir.listPredictions().length).toEqual(2);
+        expect(predDir.listPredictions().length).toEqual(2);
+    });
+
+    it('should return existing prediction sub dir', () => {
+        fs.mkdirSync(path.join(tmpDir, 'prognozy'));
+        fs.mkdirSync(path.join(tmpDir, 'prognozy/CSV'));
+        fs.mkdirSync(path.join(tmpDir, 'prognozy/CSV/poland'));
+        fs.mkdirSync(path.join(tmpDir, 'prognozy/CSV/poland/2018'));
+        fs.mkdirSync(path.join(tmpDir, 'prognozy/CSV/poland/2018/11'));
+        fs.mkdirSync(path.join(tmpDir, 'prognozy/CSV/poland/2018/11/12'));
+        fs.mkdirSync(path.join(tmpDir, 'prognozy/CSV/poland/2018/11/12/9'));
+        
+        const predictionDir = new PredictionDir(tmpDir);
+        const prediction = predictionDir.getPredictionHandle('prognozy/CSV/poland/2018/11/12/9');
+
+        expect(prediction).toBeTruthy();
+        expect(prediction.dirPath).toEqual(path.join(tmpDir, 'prognozy/CSV/poland/2018/11/12/9'));
+    });
+
+    it('should return null for non-existent sub dir', () => {
+        const predictionDir = new PredictionDir(tmpDir);
+        const prediction = predictionDir.getPredictionHandle('prognozy/CSV/poland/2018/11/12/9');
+
+        expect(prediction).toBeNull();
     });
 });

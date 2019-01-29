@@ -2,12 +2,14 @@ const log = require('./util/log.js');
 const settings = require('./util/settings.js');
 const S3Directory = require('./s3/s3_directory.js');
 const FileStore = require('./files/file_store.js');
-const PredictionDir = require('./files/prediction_dir.js');
+const S3Finder = require('./s3/s3_finder.js');
+const tarName = require('./util/date_util.js').tarName;
 
 class Transformer {
 
     constructor() {
         this.store = new FileStore(); 
+        this.s3Finder = new S3Finder(settings.S3_BUCKET_NAME);
     }
 
     async transform(directory) {
@@ -30,6 +32,28 @@ class Transformer {
         });
 
         log.info('Fetched directory: ' + directory);
+    }
+
+    _processPrediction(prediction) {
+        log.info('Processing prediction: ' + prediction.dirPath);
+        
+        const predictionDate = prediction.getPredictionDate();
+        const actualDataDir = this.s3Finder.findClosest(predictionDate);
+
+        if (actualDataDir) {
+            log.info(`Using ${actualDataDir.path} as actual data directory`);
+
+            const actualTarName = tarName(predictionDate);
+            const actualDataFile = actualDataDir.getFileHandle(actualTarName);
+
+            await actualDataFile.fetch(this.store);
+            const actualDataDir = await this.store.untar(actualDataFile);
+            actualDataFile.rmLocalFile();
+
+        } else {
+            log.warn('No actual data available, skipping prediction: ' +
+                prediction.dirPath);
+        }
     }
 }
 

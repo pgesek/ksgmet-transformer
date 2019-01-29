@@ -76,6 +76,10 @@ class S3Directory{
             });
         });
     }
+
+    getFileHandle(filename) {
+        return new S3File(filename, this.path, this.bucketName, s3);
+    }
 }
 
 module.exports = S3Directory;
