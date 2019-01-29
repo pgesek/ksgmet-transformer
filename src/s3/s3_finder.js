@@ -46,7 +46,7 @@ class S3Finder {
 
         let bestDir = null;
 
-        if (dirsByDiff) {
+        if (Object.keys(dirsByDiff).length > 0) {
             let minDiff = null;
             Object.keys(dirsByDiff).forEach(key => {
                 const diff = parseInt(key); 
@@ -81,7 +81,7 @@ class S3Finder {
     }
     
     _isAcceptableDiff(diff) {
-        return diff <= settings.PRED_MAX_MINUTES_DIFF;
+        return Math.abs(diff) <= settings.PRED_MAX_MINUTES_DIFF;
     }
 }
 

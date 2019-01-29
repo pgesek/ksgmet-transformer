@@ -8,7 +8,7 @@ function parseDirDate(dirName) {
 }
 
 function formatTarName(momentDate, predictionType) {
-    const tarFormat = `[${predictionType.TAR_PREFIX}]_YYYY_MM_DD[.tar.gz]`;
+    const tarFormat = `[${predictionType.TAR_PREFIX}]_YYYY_M_D[.tar.gz]`;
     return momentDate.format(tarFormat);
 }
 
