@@ -5,15 +5,15 @@ const os = require('os');
 const path = require('path');
 const rewiremock = require('rewiremock/node');
 
-describe('Predictdion Directory', () => {
+describe('Prediction Directory', () => {
     let tmpDir;
 
-    beforeAll(() => {
+    beforeEach(() => {
         tmpDir = fs.mkdtempSync(path.join(
             os.tmpdir(), 'dir_reader_test'));
     });
 
-    afterAll(async () => {
+    afterEach(async () => {
         await del([tmpDir], { force: true});
     });
 

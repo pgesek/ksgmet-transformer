@@ -12,7 +12,13 @@ function formatTarName(momentDate, predictionType) {
     return momentDate.format(tarFormat);
 }
 
+function formatPredictionPath(momentDate, predictionType) {
+    const pathFormat = `[prognozy/CSV/${predictionType.DIR_PATH}/]YYYY/M/D/H`;
+    return momentDate.format(pathFormat);
+}
+
 module.exports = {
     parseDirDate,
-    formatTarName
+    formatTarName,
+    formatPredictionPath
 };
