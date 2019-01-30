@@ -1,5 +1,6 @@
 const path = require('path');
-const rewiremock = require('rewiremock/node')
+const rewiremock = require('rewiremock/node');
+const PredictionType = require('../../src/util/prediction_type.js');
 
 describe('Prediction', () => {
 
@@ -20,8 +21,7 @@ describe('Prediction', () => {
 
         const prediction = new PredictionMock(dir);
 
-        expect(prediction.isEu).toBeTruthy();
-        expect(prediction.isPl).toBeFalsy();
+        expect(prediction.predictionType).toEqual(PredictionType.EU);
         expect(prediction.year).toEqual(2018);
         expect(prediction.month).toEqual(10);
         expect(prediction.day).toEqual(30);

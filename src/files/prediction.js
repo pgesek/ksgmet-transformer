@@ -22,13 +22,7 @@ class Prediction {
         }
 
         const plOrEu = split[0];
-        this.isPl = plOrEu === PredictionType.PL.DIR_PATH;
-        this.isEu = plOrEu === PredictionType.EU.DIR_PATH;
-
-        if (!this.isEu && !this.isPl) {
-            throw 'Prediction must be either EU or PL. Invalid dir: ' +
-                this.dirPath;
-        }
+        this.predictionType = PredictionType.fromString(plOrEu);
 
         this.year = parseInt(split[1]);
         this.month = parseInt(split[2]);

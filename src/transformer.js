@@ -4,6 +4,7 @@ const S3Directory = require('./s3/s3_directory.js');
 const FileStore = require('./files/file_store.js');
 const S3Finder = require('./s3/s3_finder.js');
 const tarName = require('./util/date_util.js').tarName;
+const formatPredictionPath = require('./util/date_util.js').formatPredictionPath;
 
 class Transformer {
 
@@ -38,7 +39,10 @@ class Transformer {
         log.info('Processing prediction: ' + prediction.dirPath);
         
         const predictionDate = prediction.getPredictionDate();
-        const actualDataDir = this.s3Finder.findClosest(predictionDate);
+        const predictionType = prediction.predictionType;
+
+        const actualDataDir = this.s3Finder.findClosest(predictionDate,
+            predictionType);
 
         if (actualDataDir) {
             log.info(`Using ${actualDataDir.path} as actual data directory`);
@@ -50,6 +54,17 @@ class Transformer {
             const actualDataDir = await this.store.untar(actualDataFile);
             actualDataFile.rmLocalFile();
 
+            const actualDataPath = formatPredictionPath(predictionDate,
+                predictionType);
+            const actualDataPrediction = actualDataDir.getPredictionHandle(
+                actualDataPath);
+
+            // prediction and actual data prediction build the CSVs
+            if (actualDataPrediction) {
+                // mod dates verification
+            } else {
+
+            }
         } else {
             log.warn('No actual data available, skipping prediction: ' +
                 prediction.dirPath);
