@@ -1,6 +1,6 @@
 const calcTimeDimId = require('../../src/dims/time_dim.js');
 
-describe('Time dimension calculator', () => {
+describe('Time dimension ID calculator', () => {
     it('should calculate time dim IDs', () => {
         // 1,0,0
         expect(calcTimeDimId(0, 0)).toEqual(1);

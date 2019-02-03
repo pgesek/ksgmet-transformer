@@ -4,6 +4,7 @@ const PredictionType = Object.freeze({
         TAR_PREFIX: 'pl_csv',
         MAX_LOCATION_X: 324,
         MAX_LOCATION_Y: 169,
+        MAX_PREDICTION_LENGTH: 47,
         isPl: () => true,
         isEu: () => false,
         toString: () => 'Poland'
@@ -13,6 +14,7 @@ const PredictionType = Object.freeze({
         TAR_PREFIX: 'europe_long_csv',
         MAX_LOCATION_X: 251,
         MAX_LOCATION_Y: 96,
+        MAX_PREDICTION_LENGTH: 167,
         isPl: () => false,
         isEu: () => true,
         toString: () => 'Europe Long'
