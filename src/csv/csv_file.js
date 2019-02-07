@@ -3,8 +3,10 @@ const CsvCell = require('./csv_cell.js');
 
 class CsvFile {
 
-    constructor(filePath) {
+    constructor(filePath, varName) {
         this.filePath = filePath;
+        this.varName = varName;
+
         this.reader = new ReadLines(filePath);
         
         this.currentRow = -1;
