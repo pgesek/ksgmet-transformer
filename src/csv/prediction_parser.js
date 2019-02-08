@@ -16,7 +16,7 @@ class PredictionParser {
             unit = this._readSinglePredictionUnit();
             
             if (unit) {
-
+                // create file
             }
         } while (unit);
     }
