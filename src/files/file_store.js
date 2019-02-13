@@ -1,3 +1,4 @@
+const del = require('del');
 const fs = require('fs');
 const log = require('../util/log.js');
 const os = require('os');
@@ -51,7 +52,7 @@ class FileStore {
 
     buildResultDir() {
         return new Promise((resolve, reject) => {
-            const dirPath = path.join(this.tmpDir, 'results');
+            this.resultDirPath = path.join(this.tmpDir, 'results');
             fs.mkdir(dirPath, (err) => {
                 if (err) {
                     reject(err);
@@ -60,6 +61,12 @@ class FileStore {
                 }
             });
         });
+    }
+
+    async rmResultDir() {
+        if (this.resultDirPath) {
+            await del(this.resultDirPath, { force: true });
+        }
     }
 
     _tmpDir() {

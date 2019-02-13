@@ -1,6 +1,8 @@
 const CsvFileBuilder = require('./csv_file_builder.js');
 const CsvResultFile = require('./csv_result_file.js');
 const csvResultFilename = require('./csv_result_filename.js');
+const addDeltas = require('../util/add_deltas.js');
+
 class PredictionParser {
 
     constructor(predictionPath, actualDataPath, targetDir,
@@ -33,6 +35,8 @@ class PredictionParser {
             unit = this._readSinglePredictionUnit();
             
             if (unit) {
+                unit = addDeltas(unit);
+
                 resultFile.writeUnit(unit);
             }
         } while (unit);

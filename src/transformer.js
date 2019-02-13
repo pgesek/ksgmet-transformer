@@ -32,6 +32,10 @@ class Transformer {
             const resultDir = await this.store.buildResultDir();
 
             const predictions = predDir.listPredictions();
+
+            await this.store.rmResultDir();
+
+
         });
 
         log.info('Fetched directory: ' + directory);
