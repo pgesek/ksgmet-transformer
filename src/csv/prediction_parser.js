@@ -6,7 +6,7 @@ const addDeltas = require('../util/add_deltas.js');
 class PredictionParser {
 
     constructor(predictionPath, actualDataPath, targetDir,
-        predictionDt, predictedForDt) {
+        predictionDt, predictedForDt, predictionType) {
         
         this.predictionPath = predictionPath;
         this.actualDataPath = actualDataPath;
@@ -22,6 +22,8 @@ class PredictionParser {
         const actualCsvFileBuilder = new CsvFileBuilder(
             actualDataPath, '_actual');
         this.actualFiles = actualCsvFileBuilder.build();
+
+        this.predictionType = predictionType;
     }
 
     readPredictionUnits() {

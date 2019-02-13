@@ -1,7 +1,7 @@
 const S3Directory = require('./s3_directory.js');
 const parseDirDate = require('../util/date_util.js').parseDirDate;
 const formatTarName = require('../util/date_util.js').formatTarName;
-const dateDiff = require('../util/date_diff.js')
+const dateDiffMinutes = require('../util/date_diff.js').dateDiffMinutes;
 const log = require('../util/log.js');
 const settings = require('../util/settings.js');
 
@@ -23,7 +23,7 @@ class S3Finder {
         await Promise.all(dirs.map(async s3Dir => {
             const dirName = s3Dir.path;
             const dirDt = parseDirDate(dirName);
-            const diff = dateDiff(momentDate, dirDt);
+            const diff = dateDiffMinutes(momentDate, dirDt);
 
             if (dirDt.isValid()) {
                 if (this._isAcceptableDiff(diff)) {

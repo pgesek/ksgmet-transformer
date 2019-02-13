@@ -1,8 +1,13 @@
 const moment = require('moment-timezone');
 
-function dateDiff(baseMoment, comparedMoment) {
+function dateDiffMinutes(baseMoment, comparedMoment) {
     const duration = moment.duration(comparedMoment.diff(baseMoment));
     return duration.asMinutes();
 }
 
-module.exports = dateDiff;
+function dateDiffHours(baseMoment, comparedMoment) {
+    const duration = moment.duration(comparedMoment.diff(baseMoment));
+    return Math.ceil(duration.asHours());
+}
+
+module.exports = { dateDiffMinutes, dateDiffHours };
