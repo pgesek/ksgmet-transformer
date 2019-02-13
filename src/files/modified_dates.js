@@ -1,4 +1,6 @@
 const fs = require('fs');
+const moment = require('moment-timezone');
+const settings = require('../util/settings.js');
 
 class ModifiedDates {
 
@@ -10,7 +12,7 @@ class ModifiedDates {
     }
 
     getFileModDate(file) {
-        return new Date(this.dates[file]);
+        return moment.tz(this.dates[file], settings.TIMEZONE);
     }
 }
 

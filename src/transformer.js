@@ -29,6 +29,8 @@ class Transformer {
 
             s3file.rmLocalFile();
 
+            const resultDir = await this.store.buildResultDir();
+
             const predictions = predDir.listPredictions();
         });
 

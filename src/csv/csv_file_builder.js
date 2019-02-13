@@ -5,8 +5,9 @@ const log = require('../util/log.js');
 
 class CsvFileBuilder {
 
-    constructor(dirPath) {
+    constructor(dirPath, sufix) {
         this.dirPath = dirPath;
+        this.sufix = sufix;
     }
 
     build() {
@@ -16,6 +17,7 @@ class CsvFileBuilder {
             if (file.endsWith('.csv')) {
                 let varName = file.replace('.csv', '');
                 varName = varName.toLowerCase();
+                varName += this.sufix;
 
                 const filePath = path.join(this.dirPath, file);
 

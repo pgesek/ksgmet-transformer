@@ -49,6 +49,19 @@ class FileStore {
         });
     }
 
+    buildResultDir() {
+        return new Promise((resolve, reject) => {
+            const dirPath = path.join(this.tmpDir, 'results');
+            fs.mkdir(dirPath, (err) => {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve(dirPath);
+                }
+            });
+        });
+    }
+
     _tmpDir() {
         return fs.mkdtempSync(path.join(
             os.tmpdir(), TEMP_PREFIX));
