@@ -13,8 +13,8 @@ describe('Add deltas', () => {
         
         let expected = {};
         expected = Object.assign(expected, obj);
-        expected.test_delta = 100;
-        expected.other_delta = 122.38;
+        expected.test_delta = '100';
+        expected.other_delta = '122.38';
 
         const result = addDeltas(obj);
 

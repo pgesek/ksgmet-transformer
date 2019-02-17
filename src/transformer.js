@@ -32,16 +32,17 @@ class Transformer {
             const resultDir = await this.store.buildResultDir();
 
             const predictions = predDir.listPredictions();
+            
+            predictions.forEach(pred => this._processPrediction(
+                pred, resultDir));
 
             await this.store.rmResultDir();
-
-
         });
 
         log.info('Fetched directory: ' + directory);
     }
 
-    _processPrediction(prediction) {
+    _processPrediction(prediction, resultDir) {
         log.info('Processing prediction: ' + prediction.dirPath);
         
         const predictionDate = prediction.getPredictionDate();

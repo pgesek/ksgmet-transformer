@@ -1,6 +1,7 @@
 const moment = require('moment-timezone');
 const path = require('path');
 const csvResultFilename = require('../../src/csv/csv_result_filename.js');
+const PredictionType = require('../../src/util/prediction_type');
 
 describe('CSV Result Filename', () => {
     it('should build filename for csv results', () => {
@@ -11,10 +12,10 @@ describe('CSV Result Filename', () => {
             'Europe/Warsaw');
 
         const name = csvResultFilename(dirPath, predictionDt,
-            predictionForDt);
+            predictionForDt, PredictionType.PL);
 
         expect(name).toEqual('test' + path.sep + 
             'prediction_on_2018_09_11_17_45' +
-            '_for_2018_10_02_02.csv');
+            '_for_2018_10_02_02_pl.csv');
     });
 });

@@ -13,7 +13,8 @@ function addDeltas(obj) {
 
             if (predicted != null && actual != null) {
                 const delta = Math.abs(predicted - actual);
-                objCopy[key.replace(PREDICTED, DELTA)] = delta;
+                const deltaStr = Number.parseFloat(delta.toFixed(10)).toString();
+                objCopy[key.replace(PREDICTED, DELTA)] = deltaStr;
             }
         }
     });

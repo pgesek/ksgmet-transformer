@@ -44,6 +44,10 @@ class Prediction {
         const modDatePath = path.join(this.dirPath, MODIFIED_DATES);
         return new ModifiedDates(modDatePath);
     }
+
+    getMadeOnDate() {
+        return this.getModDates().getFileModDate();
+    }
 }
 
 module.exports = Prediction;

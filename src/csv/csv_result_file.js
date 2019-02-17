@@ -11,7 +11,7 @@ class CsvResultFile {
 
     writeUnit(unit) {
         const csvStringifier = this._getCsvStringifier(unit);
-        let data = ''
+        let data = '';
         if (!this.headerWritten) {
             const header = csvStringifier.getHeaderString();
             data = header;
@@ -34,7 +34,9 @@ class CsvResultFile {
     }
  
     end() {
-        this.writeStream.end();
+        return new Promise(resolve => {
+            this.writeStream.end(() => resolve());
+        });
     }
 
     _getCsvStringifier(unit) {

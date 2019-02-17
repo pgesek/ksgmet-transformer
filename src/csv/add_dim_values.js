@@ -5,29 +5,26 @@ const calcTypeDimId = require('../dims/type_dim.js');
 const dateDiffHours = require('../util/date_diff.js').dateDiffHours;
 
 function addDimValues(unit, params) {
-    const { predictionType, x, y, predictionDt, predictedForDt } =  
+    const { predictionType, madeOnDt, predictionDt } =  
         params;
     
-    const result = {};
-    Object.assign(result, unit);
+    const result = { ...unit };
 
     result.prediction_type = predictionType.toString();
-    result.x = x;
-    result.y = y;
-    result.prediction_dt = predictionDt.format();
-    result.made_on_dt = predictedForDt.format();
+    result.prediction_timestamp = predictionDt.format();
+    result.made_on_timestamp = madeOnDt.format();
 
-    result.prediction_date = calcDateDimId(predictedForDt);
-    result.prediction_time = calcTimeDimId(predictedForDt.hour(),
-        predictedForDt.minute());
-
-    result.made_on_date = calcDateDimId(predictionDt);
-    result.made_on_time = calcTimeDimId(predictionDt.hour(),
+    result.prediction_date = calcDateDimId(predictionDt);
+    result.prediction_time = calcTimeDimId(predictionDt.hour(),
         predictionDt.minute());
 
-    result.location = calcLocDimId(x, y, predictionType);
+    result.made_on_date = calcDateDimId(madeOnDt);
+    result.made_on_time = calcTimeDimId(madeOnDt.hour(),
+        madeOnDt.minute());
+
+    result.location = calcLocDimId(unit.x, unit.y, predictionType);
     
-    const hourDiff = dateDiffHours(predictionDt, predictedForDt);
+    const hourDiff = dateDiffHours(madeOnDt, predictionDt);
     result.type = calcTypeDimId(hourDiff, predictionType);
 
     return result;

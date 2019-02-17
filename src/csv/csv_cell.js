@@ -1,7 +1,7 @@
 class CsvCell {
     
     constructor(value, x, y) {
-        this.value = value;
+        this.value = new Number(value);
         this.x = x;
         this.y = y;
     }

@@ -2,33 +2,34 @@ const CsvFileBuilder = require('./csv_file_builder.js');
 const CsvResultFile = require('./csv_result_file.js');
 const csvResultFilename = require('./csv_result_filename.js');
 const addDeltas = require('../util/add_deltas.js');
+const addDimValues = require('./add_dim_values');
 
 class PredictionParser {
 
-    constructor(predictionPath, actualDataPath, targetDir,
-        predictionDt, predictedForDt, predictionType) {
+    constructor(prediction, actualData, targetDir) {
         
-        this.predictionPath = predictionPath;
-        this.actualDataPath = actualDataPath;
+        this.predictionPath = prediction.dirPath;
+        this.actualDataPath = actualData.dirPath;
         this.targetDir = targetDir;
 
-        this.predictionDt = predictionDt;
-        this.predictedForDt = predictedForDt;
+        this.madeOnDt = prediction.getMadeOnDate();
+        this.predictionDt = prediction.getPredictionDate();
 
         const predictionCsvFileBuilder = new CsvFileBuilder(
-            predictionPath, '_predicted');
+            this.predictionPath, '_predicted');
         this.predictionFiles = predictionCsvFileBuilder.build();
 
         const actualCsvFileBuilder = new CsvFileBuilder(
-            actualDataPath, '_actual');
+            this.actualDataPath, '_actual');
         this.actualFiles = actualCsvFileBuilder.build();
 
-        this.predictionType = predictionType;
+        this.predictionType = prediction.predictionType;
     }
 
-    readPredictionUnits() {
+    async parsePredictionUnits() {
         const resultFileName = csvResultFilename(this.targetDir,
-            this.predictionDt, this.predictedForDt);
+            this.madeOnDt, this.predictionDt,
+            this.predictionType);
 
         const resultFile = new CsvResultFile(resultFileName);
 
@@ -38,12 +39,17 @@ class PredictionParser {
             
             if (unit) {
                 unit = addDeltas(unit);
+                unit = addDimValues(unit, {
+                    predictionType: this.predictionType,
+                    predictionDt: this.predictionDt,
+                    madeOnDt: this.madeOnDt
+                });
 
                 resultFile.writeUnit(unit);
             }
         } while (unit);
 
-        resultFile.end();
+        await resultFile.end();
     }
 
     _readSinglePredictionUnit() {
@@ -53,14 +59,20 @@ class PredictionParser {
         const files = this.predictionFiles.concat(this.actualFiles);
 
         files.forEach(file => {
-            const val = file.nextCell();
-            let valAsNum = null;
-            if (val) {
-                valAsNum = new Number(val);
+            const cell = file.nextCell();
+            let val = null;
+            if (cell) {
+                val = cell.value;
+
                 anyFileHadValue = true;
+
+                if (!unit.x) {
+                    unit.x = cell.x;
+                    unit.y = cell.y;
+                }
             }
 
-            unit[file.varName] = valAsNum;
+            unit[file.varName] = val;
         });
 
         return anyFileHadValue ? unit : null;

@@ -6,14 +6,15 @@ describe('Add dim values', () => {
     it('should add dim values', () => {
         const unit = {
             val: 4.23,
-            val2: 2
+            val2: 2,
+            x: 22,
+            y: 31
         };
         const params = {
             predictionType: PredictionType.PL,
-            x: 22,
-            y: 31,
-            predictionDt: moment.tz('2018-11-20 08:22:11', 'Europe/Warsaw'),
-            predictedForDt: moment.tz('2018-11-20 17:00', 'Europe/Warsaw')
+
+            madeOnDt: moment.tz('2018-11-20 08:22:11', 'Europe/Warsaw'),
+            predictionDt: moment.tz('2018-11-20 17:00', 'Europe/Warsaw')
         };
         const expected = {
             val: 4.23,
@@ -22,8 +23,8 @@ describe('Add dim values', () => {
             prediction_type: 'Poland',
             x: 22,
             y: 31,
-            prediction_dt: params.predictionDt.format(),
-            made_on_dt: params.predictedForDt.format(),
+            prediction_timestamp: params.predictionDt.format(),
+            made_on_timestamp: params.madeOnDt.format(),
 
             prediction_date: 81,
             prediction_time: 1021,

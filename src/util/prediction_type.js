@@ -2,6 +2,7 @@ const PredictionType = Object.freeze({
     PL: {
         DIR_PATH: 'poland',
         TAR_PREFIX: 'pl_csv',
+        RESULT_SUFFIX: 'pl',
         MAX_LOCATION_X: 324,
         MAX_LOCATION_Y: 169,
         MAX_PREDICTION_LENGTH: 47,
@@ -12,6 +13,7 @@ const PredictionType = Object.freeze({
     EU: {
         DIR_PATH: 'europe_long',
         TAR_PREFIX: 'europe_long_csv',
+        RESULT_SUFFIX: 'eu',
         MAX_LOCATION_X: 251,
         MAX_LOCATION_Y: 96,
         MAX_PREDICTION_LENGTH: 167,
