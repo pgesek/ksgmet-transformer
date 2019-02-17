@@ -5,6 +5,7 @@ const FileStore = require('./files/file_store.js');
 const S3Finder = require('./s3/s3_finder.js');
 const tarName = require('./util/date_util.js').tarName;
 const formatPredictionPath = require('./util/date_util.js').formatPredictionPath;
+const PredictionParser = require('./csv/prediction_parser');
 
 class Transformer {
 
@@ -69,6 +70,10 @@ class Transformer {
             // prediction and actual data prediction build the CSVs
             if (actualDataPrediction) {
                 // mod dates verification
+                const parser = new PredictionParser(prediction,
+                    actualDataPrediction, resultDir);
+                
+                await parser.parsePredictionUnits();
             } else {
 
             }
