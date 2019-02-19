@@ -20,7 +20,10 @@ const settings = Object.freeze({
     LOAD_AWS_CONFIG_FILE: getSetting('LOAD_AWS_CONFIG_FILE', false, true),
 
     TIMEZONE: getSetting('TIMEZONE', 'Europe/Warsaw'),
-    PRED_MAX_MINUTES_DIFF: parseInt(getSetting('PRED_MAX_MINUTES_DIFF', '300'))
+    PRED_MAX_MINUTES_DIFF: parseInt(getSetting('PRED_MAX_MINUTES_DIFF', '300')),
+
+   TARGET_BUCKET: getSettings('S3_TARGET_BUCKET_NAME', ''),
+   TARGET_PREFIX: getSettings('S3_TARGET_PREFIX', '')
 });
 
 if (settings.LOAD_AWS_CONFIG_FILE) {

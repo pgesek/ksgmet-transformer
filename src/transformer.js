@@ -6,41 +6,48 @@ const S3Finder = require('./s3/s3_finder.js');
 const tarName = require('./util/date_util.js').tarName;
 const formatPredictionPath = require('./util/date_util.js').formatPredictionPath;
 const PredictionParser = require('./csv/prediction_parser');
+const S3Uploader = require('./s3/s3_uploader');
 
 class Transformer {
 
     constructor() {
         this.store = new FileStore(); 
         this.s3Finder = new S3Finder(settings.S3_BUCKET_NAME);
+        this.S3Uploader = new S3Uploader(settings.TARGET_BUCKET, 
+            settings.TARGET_PREFIX);
     }
 
     async transform(directory) {
         const s3directory = new S3Directory(settings.S3_BUCKET_NAME,
             directory);
         
+        log.info('Fetched directory: ' + directory);
+        
         const files = await s3directory.listFiles();
 
-        await files.forEach(async s3file => {
-            await s3file.fetch(this.store);
+        files.forEach(async s3file => this._processTarFile(s3file));
+    }
+
+    async _processTarFile(s3file) {
+        log.info(`Processing file:${s3file.path}/${s3file.fileName}`);
+
+        await s3file.fetch(this.store);
             
-            const predDir = await this.store.untar(s3file);
+        const predDir = await this.store.untar(s3file);
 
-            log.info('Created prediction directory: ' + 
-                predDir.filePath);
+        log.info('Created prediction directory: ' + 
+            predDir.filePath);
 
-            s3file.rmLocalFile();
+        s3file.rmLocalFile();
 
-            const resultDir = await this.store.buildResultDir();
+        const resultDir = await this.store.buildResultDir();
 
-            const predictions = predDir.listPredictions();
-            
-            predictions.forEach(pred => this._processPrediction(
-                pred, resultDir));
+        const predictions = predDir.listPredictions();
+        
+        predictions.forEach(pred => this._processPrediction(
+            pred, resultDir));
 
-            await this.store.rmResultDir();
-        });
-
-        log.info('Fetched directory: ' + directory);
+        await this.store.rmResultDir();
     }
 
     _processPrediction(prediction, resultDir) {
@@ -67,13 +74,18 @@ class Transformer {
             const actualDataPrediction = actualDataDir.getPredictionHandle(
                 actualDataPath);
 
+            log.info('Using the following actual data prediction: ' +
+                actualDataPrediction.dirPath);
+
             // prediction and actual data prediction build the CSVs
             if (actualDataPrediction) {
                 // mod dates verification
                 const parser = new PredictionParser(prediction,
                     actualDataPrediction, resultDir);
                 
-                await parser.parsePredictionUnits();
+                const resultFile = await parser.parsePredictionUnits();
+
+                await this.S3Uploader.uploadFile(resultFile);
             } else {
 
             }

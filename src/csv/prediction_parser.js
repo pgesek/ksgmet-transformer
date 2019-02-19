@@ -50,6 +50,8 @@ class PredictionParser {
         } while (unit);
 
         await resultFile.end();
+
+        return resultFileName;
     }
 
     _readSinglePredictionUnit() {
