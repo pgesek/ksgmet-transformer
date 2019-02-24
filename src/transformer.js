@@ -51,7 +51,11 @@ class Transformer {
         log.info('Finished processing predictions from: ' +
             this.s3Finder.fileName);
 
-        await this.store.rmResultDir();
+        if (settings.CLEAN_RESULT_DIR) {
+            await this.store.rmResultDir();
+        } else {
+            log.info('Skipping removal of result dir');
+        }
     }
 
     _processPrediction(prediction, resultDir) {

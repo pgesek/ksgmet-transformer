@@ -65,7 +65,10 @@ class FileStore {
 
     async rmResultDir() {
         if (this.resultDirPath) {
+            log.info('Cleaning result dir: ' + this.resultDirPath);
             await del(this.resultDirPath, { force: true });
+        } else {
+            log.warn('Cannot clean result dir, it does not exist');
         }
     }
 

@@ -20,6 +20,8 @@ const settings = Object.freeze({
     LOAD_AWS_CONFIG_FILE: getSetting('LOAD_AWS_CONFIG_FILE', false, true),
     UPLOAD_TO_S3: getSetting('UPLOAD_TO_S3', 'true', true),
 
+    CLEAN_RESULT_DIR: getSetting('CLEAN_RESULT_DIR', 'true', true),
+
     TIMEZONE: getSetting('TIMEZONE', 'Europe/Warsaw'),
     PRED_MAX_MINUTES_DIFF: parseInt(getSetting('PRED_MAX_MINUTES_DIFF', '300')),
     ACTUAL_MAX_MINUTES_DIFF: parseInt(getSetting('ACTUAL_MAX_MINUTES_DIFF', '240')),
