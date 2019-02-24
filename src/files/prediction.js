@@ -48,6 +48,11 @@ class Prediction {
     getMadeOnDate() {
         return this.getModDates().getFileModDate();
     }
+
+    toString() {
+        return `Prediction for ${this.getPredictionDate().format}`
+            + ` made on ${this.getMadeOnDate()}`;
+    }
 }
 
 module.exports = Prediction;

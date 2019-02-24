@@ -7,6 +7,7 @@ const tarName = require('./util/date_util.js').tarName;
 const formatPredictionPath = require('./util/date_util.js').formatPredictionPath;
 const PredictionParser = require('./csv/prediction_parser');
 const S3Uploader = require('./s3/s3_uploader');
+const dateDiffMinutes = require('./util/date_diff.js').dateDiffMinutes;
 
 class Transformer {
 
@@ -77,9 +78,9 @@ class Transformer {
             log.info('Using the following actual data prediction: ' +
                 actualDataPrediction.dirPath);
 
-            // prediction and actual data prediction build the CSVs
-            if (actualDataPrediction) {
-                // mod dates verification
+            if (actualDataPrediction &&
+                this._verifyActualModDate(actualDataPrediction)) {
+                
                 const parser = new PredictionParser(prediction,
                     actualDataPrediction, resultDir);
                 
@@ -87,11 +88,27 @@ class Transformer {
 
                 await this.S3Uploader.uploadFile(resultFile);
             } else {
-
+                log.warn('Have to skip prediction: ')
             }
         } else {
             log.warn('No actual data available, skipping prediction: ' +
-                prediction.dirPath);
+                prediction.toString());
+        }
+    }
+
+    _verifyActualModDate(actualDataPrediction) {
+        const predDate = actualDataPrediction.getPredictionDate();
+        const madeOn = actualDataPrediction.getMadeOnDate();
+
+        const diff = Math.abs(dateDiffMinutes(predDate, madeOn));
+
+        if (diff > settings.ACTUAL_MAX_MINUTES_DIFF) {
+            log.warn(`Prediction ${actualDataPrediction.toString()}`
+                + ` is too far away to be considered an actual data `
+                + `prediction`);
+            return false;
+        } else {
+            return true;
         }
     }
 }
