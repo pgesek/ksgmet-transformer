@@ -3,6 +3,7 @@ const CsvResultFile = require('./csv_result_file.js');
 const csvResultFilename = require('./csv_result_filename.js');
 const addDeltas = require('../util/add_deltas.js');
 const addDimValues = require('./add_dim_values');
+const log = require('../util/log');
 
 class PredictionParser {
 
@@ -57,6 +58,7 @@ class PredictionParser {
     _readSinglePredictionUnit() {
         const unit = {};
         let anyFileHadValue = false;
+        const filesNoValue = [];
 
         const files = this.predictionFiles.concat(this.actualFiles);
 
@@ -72,10 +74,16 @@ class PredictionParser {
                     unit.x = cell.x;
                     unit.y = cell.y;
                 }
+            } else {
+                filesNoValue.push(fil.varName);
             }
 
             unit[file.varName] = val;
         });
+
+        if (anyFileHadValue && filesNoValue.length > 0) {
+            log.warn('Missing fields for prediction unit: ' + filesNoValue);
+        }
 
         return anyFileHadValue ? unit : null;
     }
