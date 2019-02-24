@@ -48,6 +48,9 @@ class Transformer {
         predictions.forEach(pred => this._processPrediction(
             pred, resultDir));
 
+        log.info('Finished processing predictions from: ' +
+            this.s3Finder.fileName);
+
         await this.store.rmResultDir();
     }
 
@@ -86,7 +89,11 @@ class Transformer {
                 
                 const resultFile = await parser.parsePredictionUnits();
 
-                await this.S3Uploader.uploadFile(resultFile);
+                if (settings.UPLOAD_TO_S3) {
+                    await this.S3Uploader.uploadFile(resultFile);
+                } else {
+                    log.info('S3 Upload disabled, skipping');
+                }
             } else {
                 log.warn('Have to skip prediction: ')
             }

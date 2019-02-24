@@ -18,6 +18,7 @@ const settings = Object.freeze({
     S3_BUCKET_NAME: getSetting('S3_BUCKET_NAME', 'ksgmet'),
     
     LOAD_AWS_CONFIG_FILE: getSetting('LOAD_AWS_CONFIG_FILE', false, true),
+    UPLOAD_TO_S3: getSetting('UPLOAD_TO_S3', 'true', true),
 
     TIMEZONE: getSetting('TIMEZONE', 'Europe/Warsaw'),
     PRED_MAX_MINUTES_DIFF: parseInt(getSetting('PRED_MAX_MINUTES_DIFF', '300')),
