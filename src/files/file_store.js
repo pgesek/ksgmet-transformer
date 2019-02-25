@@ -16,8 +16,13 @@ class FileStore {
             this.tmpDir);
     }
 
-    saveFile(name, body) {
-        const fullPath = path.join(this.tmpDir, name);
+    saveFile(name, body, prefix) {
+        let fullPath = prefix ? path.join(this.tmpDir, prefix) : this.tmpDir;
+        if (!fs.existsSync(fullPath)) {
+            fs.mkdirSync(fullPath);
+        }
+        
+        fullPath = path.join(fullPath, name);
 
         return new Promise((resolve, reject) => {
             fs.writeFile(fullPath, body, err => {
@@ -33,9 +38,15 @@ class FileStore {
         });
     }
 
-    untar(s3File) {
+    untar(prefix, s3File) {
+        const dirPath = path.join(this.tmpDir, prefix);
+
+        if (!fs.existsSync(dirPath)) {
+            fs.mkdirSync(dirPath);
+        }
+
         return new Promise((resolve, reject) => {
-            const filePath = path.join(this.tmpDir, 
+            const filePath = path.join(dirPath, 
                 s3File.fileNameNoExt());
             targz.decompress({
                 src: s3File.filePath,
@@ -50,23 +61,23 @@ class FileStore {
         });
     }
 
-    buildResultDir() {
+    buildResultDir(sufix) {
         return new Promise((resolve, reject) => {
-            this.resultDirPath = path.join(this.tmpDir, 'results');
-            fs.mkdir(dirPath, (err) => {
+            const resultDirPath = path.join(this.tmpDir, 'results_' + sufix);
+            fs.mkdir(resultDirPath, (err) => {
                 if (err) {
                     reject(err);
                 } else {
-                    resolve(dirPath);
+                    resolve(resultDirPath);
                 }
             });
         });
     }
 
-    async rmResultDir() {
-        if (this.resultDirPath) {
-            log.info('Cleaning result dir: ' + this.resultDirPath);
-            await del(this.resultDirPath, { force: true });
+    async rmResultDir(resultDirPath) {
+        if (resultDirPath) {
+            log.info('Cleaning result dir: ' + resultDirPath);
+            await del(resultDirPath, { force: true });
         } else {
             log.warn('Cannot clean result dir, it does not exist');
         }

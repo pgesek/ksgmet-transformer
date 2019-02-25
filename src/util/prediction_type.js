@@ -30,6 +30,10 @@ const PredictionType = Object.freeze({
             throw 'Prediction must be either EU or PL. Invalid dir: ' +
                 this.dirPath;
         }
+    },
+    isPredictionTar(fileName) {
+        return fileName.startsWith(this.PL.TAR_PREFIX) ||
+            fileName.startsWith(this.EU.TAR_PREFIX);
     }
 });
 

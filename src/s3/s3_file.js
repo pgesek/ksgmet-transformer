@@ -8,7 +8,7 @@ class S3File {
         this.s3ref = s3ref;
     }
 
-    async fetch(store) {
+    async fetch(store, dirPrefix) {
         const params = {
             Bucket: this.bucketName,
             Key: `${this.path}/${this.fileName}`
@@ -21,7 +21,7 @@ class S3File {
                     return;
                 }
 
-                store.saveFile(this.fileName, data.Body)
+                store.saveFile(this.fileName, data.Body, dirPrefix)
                     .then(filePath => {
                         this.filePath = filePath;
                         resolve(filePath);

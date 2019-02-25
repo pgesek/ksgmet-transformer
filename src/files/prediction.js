@@ -50,7 +50,7 @@ class Prediction {
     }
 
     toString() {
-        return `Prediction for ${this.getPredictionDate().format}`
+        return `Prediction for ${this.getPredictionDate().format()}`
             + ` made on ${this.getMadeOnDate()}`;
     }
 }

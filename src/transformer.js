@@ -3,11 +3,12 @@ const settings = require('./util/settings.js');
 const S3Directory = require('./s3/s3_directory.js');
 const FileStore = require('./files/file_store.js');
 const S3Finder = require('./s3/s3_finder.js');
-const tarName = require('./util/date_util.js').tarName;
+const formatTarName = require('./util/date_util.js').formatTarName;
 const formatPredictionPath = require('./util/date_util.js').formatPredictionPath;
 const PredictionParser = require('./csv/prediction_parser');
 const S3Uploader = require('./s3/s3_uploader');
 const dateDiffMinutes = require('./util/date_diff.js').dateDiffMinutes;
+const PredictionType = require('./util/prediction_type');
 
 class Transformer {
 
@@ -26,55 +27,63 @@ class Transformer {
         
         const files = await s3directory.listFiles();
 
-        files.forEach(async s3file => this._processTarFile(s3file));
+        return Promise.all(files.map(async s3file => {
+            if (PredictionType.isPredictionTar(s3file.fileName)) {
+                await this._processTarFile(s3file);
+            } else {
+                log.info('Skipping tar: ' + s3file.fileName);
+            }
+        }));
     }
 
     async _processTarFile(s3file) {
         log.info(`Processing file:${s3file.path}/${s3file.fileName}`);
 
-        await s3file.fetch(this.store);
+        await s3file.fetch(this.store, s3file.fileNameNoExt());
             
-        const predDir = await this.store.untar(s3file);
+        const predDir = await this.store.untar(s3file.fileNameNoExt(),
+            s3file);
 
         log.info('Created prediction directory: ' + 
             predDir.filePath);
 
         s3file.rmLocalFile();
 
-        const resultDir = await this.store.buildResultDir();
+        const resultDir = await this.store.buildResultDir(s3file.fileNameNoExt());
 
         const predictions = predDir.listPredictions();
         
         predictions.forEach(pred => this._processPrediction(
-            pred, resultDir));
+            pred, resultDir, s3file.fileNameNoExt()));
 
         log.info('Finished processing predictions from: ' +
             this.s3Finder.fileName);
 
         if (settings.CLEAN_RESULT_DIR) {
-            await this.store.rmResultDir();
+            await this.store.rmResultDir(s3file.fileName);
         } else {
             log.info('Skipping removal of result dir');
         }
     }
 
-    _processPrediction(prediction, resultDir) {
+    async _processPrediction(prediction, resultDir, parentTarName) {
         log.info('Processing prediction: ' + prediction.dirPath);
         
         const predictionDate = prediction.getPredictionDate();
         const predictionType = prediction.predictionType;
 
-        const actualDataDir = this.s3Finder.findClosest(predictionDate,
+        const actualDataS3Dir = await this.s3Finder.findClosest(predictionDate,
             predictionType);
 
-        if (actualDataDir) {
-            log.info(`Using ${actualDataDir.path} as actual data directory`);
+        if (actualDataS3Dir) {
+            log.info(`Using ${actualDataS3Dir.path} as actual data directory`);
 
-            const actualTarName = tarName(predictionDate);
-            const actualDataFile = actualDataDir.getFileHandle(actualTarName);
+            const actualTarName = formatTarName(predictionDate, predictionType);
+            const actualDataFile = actualDataS3Dir.getFileHandle(actualTarName);
 
-            await actualDataFile.fetch(this.store);
-            const actualDataDir = await this.store.untar(actualDataFile);
+            await actualDataFile.fetch(this.store, parentTarName);
+            const actualDataDir = await this.store.untar(
+                parentTarName, actualDataFile);
             actualDataFile.rmLocalFile();
 
             const actualDataPath = formatPredictionPath(predictionDate,

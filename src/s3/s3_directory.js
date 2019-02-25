@@ -4,7 +4,7 @@ const S3File = require('./s3_file.js');
 
 const s3 = new AWS.S3();
 
-class S3Directory{
+class S3Directory {
     constructor(bucketName, path) {
         this.bucketName = bucketName;
         this.path = path;
@@ -61,18 +61,18 @@ class S3Directory{
                     return;
                 }
 
-                let dirNames = [];
+                let dirs = [];
                 if (data.CommonPrefixes) {
-                    dirNames = data.CommonPrefixes.map(prefix => {
+                    dirs = data.CommonPrefixes.map(prefix => {
                         let name = prefix.Prefix;
                         name = name.substr(0, name.lastIndexOf('/'));
                         return new S3Directory(this.bucketName, name);
                     });
                 }
 
-                log.info(`Found ${dirNames.length} directories in ${this.path}`);
+                log.info(`Found ${dirs.length} directories in ${this.path}`);
 
-                resolve(dirNames);
+                resolve(dirs);
             });
         });
     }
