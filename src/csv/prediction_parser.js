@@ -28,6 +28,9 @@ class PredictionParser {
     }
 
     async parsePredictionUnits() {
+        log.info(`Parsing prediction units of ${this.predictionPath}` + 
+         ` against actual data from ${this.actualDataPath}`);
+
         const resultFileName = csvResultFilename(this.targetDir,
             this.madeOnDt, this.predictionDt,
             this.predictionType);
@@ -73,9 +76,19 @@ class PredictionParser {
                 if (!unit.x) {
                     unit.x = cell.x;
                     unit.y = cell.y;
+
+                    if (unit.x > this.predictionType.MAX_LOCATION_X) {
+                        throw `X of ${unit.x} is illegal for prediction type ` +
+                            `${this.predictionType.toString()}. Encountered in file ${file.filePath} ` +
+                            `for value ${val}`;
+                    }
+                    if (unit.y > this.predictionType.MAX_LOCATION_Y) {
+                        throw `Y of ${unit.y} is illegal for prediction type ` +
+                            `${this.predictionType.toString()}. Encountered in file ${file.filePath}`;
+                    }
                 }
             } else {
-                filesNoValue.push(fil.varName);
+                filesNoValue.push(file.varName);
             }
 
             unit[file.varName] = val;

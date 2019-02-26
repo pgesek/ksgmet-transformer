@@ -24,7 +24,7 @@ const settings = Object.freeze({
 
     TIMEZONE: getSetting('TIMEZONE', 'Europe/Warsaw'),
     PRED_MAX_MINUTES_DIFF: parseInt(getSetting('PRED_MAX_MINUTES_DIFF', '300')),
-    ACTUAL_MAX_MINUTES_DIFF: parseInt(getSetting('ACTUAL_MAX_MINUTES_DIFF', '240')),
+    ACTUAL_MAX_MINUTES_DIFF: parseInt(getSetting('ACTUAL_MAX_MINUTES_DIFF', '600')),
 
     TARGET_BUCKET: getSetting('S3_TARGET_BUCKET_NAME', 'ksgmet-processed'),
     TARGET_PREFIX: getSetting('S3_TARGET_PREFIX', 'csv'),

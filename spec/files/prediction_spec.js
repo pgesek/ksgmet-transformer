@@ -1,12 +1,18 @@
 const path = require('path');
 const rewiremock = require('rewiremock/node');
+const moment = require('moment-timezone');
 const PredictionType = require('../../src/util/prediction_type.js');
+
 
 describe('Prediction', () => {
 
     it('should properly parse the directory', () => {
         const PredictionMock = rewiremock.proxy('../../src/files/prediction.js', () => ({
-            '../../src/files/modified_dates.js': class {}
+            '../../src/files/modified_dates.js': class {
+                getFileModDate() {
+                    return moment.tz('2018-10-29 22:03:47', 'Europe/Warsaw');
+                }
+            }
         }));
         
         let dir;
@@ -28,5 +34,7 @@ describe('Prediction', () => {
         expect(prediction.hour).toEqual(2);
         expect(prediction.getPredictionDate().format())
             .toEqual('2018-10-30T02:00:00+01:00');
+        expect(prediction.toPath()).toEqual('europe_long_csv_2018_10_30_02');
+        expect(prediction.isFuturePrediction()).toBeTruthy();
     });
 });

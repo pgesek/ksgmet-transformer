@@ -9,6 +9,7 @@ const PredictionParser = require('./csv/prediction_parser');
 const S3Uploader = require('./s3/s3_uploader');
 const dateDiffMinutes = require('./util/date_diff.js').dateDiffMinutes;
 const PredictionType = require('./util/prediction_type');
+const path = require('path');
 
 class Transformer {
 
@@ -53,11 +54,17 @@ class Transformer {
 
         const predictions = predDir.listPredictions();
         
-        predictions.forEach(pred => this._processPrediction(
-            pred, resultDir, s3file.fileNameNoExt()));
+        await Promise.all(predictions.map(async pred => {
+            if (pred.isFuturePrediction()) {
+                await this._processPrediction(pred, resultDir, 
+                    s3file.fileNameNoExt());
+            } else {
+                log.info('Skipping non-future prediction: ' + pred);
+            }
+        }));
 
         log.info('Finished processing predictions from: ' +
-            this.s3Finder.fileName);
+            s3file.fileName);
 
         if (settings.CLEAN_RESULT_DIR) {
             await this.store.rmResultDir(s3file.fileName);
@@ -67,7 +74,7 @@ class Transformer {
     }
 
     async _processPrediction(prediction, resultDir, parentTarName) {
-        log.info('Processing prediction: ' + prediction.dirPath);
+        log.info('Processing prediction: ' + prediction.toString());
         
         const predictionDate = prediction.getPredictionDate();
         const predictionType = prediction.predictionType;
@@ -81,15 +88,25 @@ class Transformer {
             const actualTarName = formatTarName(predictionDate, predictionType);
             const actualDataFile = actualDataS3Dir.getFileHandle(actualTarName);
 
-            await actualDataFile.fetch(this.store, parentTarName);
+            const prefix = path.join(parentTarName, 'actual_for_' + 
+                prediction.toPath());
+
+            await actualDataFile.fetch(this.store, prefix);
             const actualDataDir = await this.store.untar(
-                parentTarName, actualDataFile);
+                prefix, actualDataFile);
             actualDataFile.rmLocalFile();
 
             const actualDataPath = formatPredictionPath(predictionDate,
                 predictionType);
             const actualDataPrediction = actualDataDir.getPredictionHandle(
                 actualDataPath);
+
+            if (!actualDataPrediction) {
+                log.warn(`Determined actual prediction file ${actualDataS3Dir.path}/` +
+                    `${actualTarName} does not contain expected prediction: ${actualDataPath}. ` +
+                    `Skipping.`);
+                return;
+            }
 
             log.info('Using the following actual data prediction: ' +
                 actualDataPrediction.dirPath);
@@ -108,7 +125,7 @@ class Transformer {
                     log.info('S3 Upload disabled, skipping');
                 }
             } else {
-                log.warn('Have to skip prediction: ')
+                log.warn('Have to skip prediction: ' + prediction.toString());
             }
         } else {
             log.warn('No actual data available, skipping prediction: ' +
@@ -123,11 +140,13 @@ class Transformer {
         const diff = Math.abs(dateDiffMinutes(predDate, madeOn));
 
         if (diff > settings.ACTUAL_MAX_MINUTES_DIFF) {
-            log.warn(`Prediction ${actualDataPrediction.toString()}`
+            log.warn(`${actualDataPrediction.toString()}`
                 + ` is too far away to be considered an actual data `
                 + `prediction`);
             return false;
         } else {
+            log.info(`${actualDataPrediction.toString()}`
+                + ` accepted as actual data`);
             return true;
         }
     }

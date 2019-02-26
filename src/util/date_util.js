@@ -17,8 +17,14 @@ function formatPredictionPath(momentDate, predictionType) {
     return momentDate.format(pathFormat);
 }
 
+function formatPredictionDirPrefix(momentDate, predictionType) {
+    const dirFormat = `[${predictionType.TAR_PREFIX}]_YYYY_MM_DD_HH`;
+    return momentDate.format(dirFormat);
+}
+
 module.exports = {
     parseDirDate,
     formatTarName,
-    formatPredictionPath
+    formatPredictionPath,
+    formatPredictionDirPrefix
 };

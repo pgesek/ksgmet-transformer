@@ -11,8 +11,13 @@ class ModifiedDates {
             this.filePath, 'utf8'));
     }
 
+    // TODO: Fix me
     getFileModDate(file) {
-        return moment.tz(this.dates[file], settings.TIMEZONE);
+        let key = file;
+        if (!key) {
+            key = Object.keys(this.dates)[0];
+        }
+        return moment.tz(this.dates[key], settings.TIMEZONE);
     }
 }
 

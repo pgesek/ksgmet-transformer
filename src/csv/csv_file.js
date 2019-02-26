@@ -37,6 +37,10 @@ class CsvFile {
             let lineStr = line.toString('UTF-8');
             lineStr = lineStr.replace('\r', '');
 
+            if (lineStr.endsWith(',')) {
+                lineStr = lineStr.substr(0, lineStr.length - 1);
+            }
+
             this.currentLine = lineStr.split(',');
             
             this.currentCol = 0;

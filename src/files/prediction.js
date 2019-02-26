@@ -3,6 +3,9 @@ const ModifiedDates = require('./modified_dates.js');
 const moment = require('moment-timezone');
 const settings = require('../util/settings.js');
 const PredictionType = require('../util/prediction_type.js');
+const formatPredictionDirPrefix = require('../util/date_util').formatPredictionDirPrefix;
+const dateDiffHours = require('../util/date_diff').dateDiffHours;
+
 
 const CSV_PATH = `prognozy${path.sep}CSV${path.sep}`;
 const MODIFIED_DATES = 'modified_dates.json';
@@ -49,9 +52,20 @@ class Prediction {
         return this.getModDates().getFileModDate();
     }
 
+    toPath() {
+        return formatPredictionDirPrefix(this.getPredictionDate(),
+            this.predictionType);
+    }
+
     toString() {
         return `Prediction for ${this.getPredictionDate().format()}`
             + ` made on ${this.getMadeOnDate()}`;
+    }
+
+    isFuturePrediction() {
+        const diff = dateDiffHours(this.getMadeOnDate(),
+            this.getPredictionDate());
+        return diff > 0;            
     }
 }
 

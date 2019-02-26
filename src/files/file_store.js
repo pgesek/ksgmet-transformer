@@ -1,5 +1,6 @@
 const del = require('del');
 const fs = require('fs');
+const fsExtra = require('fs-extra');
 const log = require('../util/log.js');
 const os = require('os');
 const path = require('path');
@@ -19,10 +20,12 @@ class FileStore {
     saveFile(name, body, prefix) {
         let fullPath = prefix ? path.join(this.tmpDir, prefix) : this.tmpDir;
         if (!fs.existsSync(fullPath)) {
-            fs.mkdirSync(fullPath);
+            fsExtra.mkdirpSync(fullPath);
         }
         
         fullPath = path.join(fullPath, name);
+
+        log.info(`Saving ${name} to ${fullPath}`);
 
         return new Promise((resolve, reject) => {
             fs.writeFile(fullPath, body, err => {
@@ -45,6 +48,8 @@ class FileStore {
             fs.mkdirSync(dirPath);
         }
 
+        log.info(`Untaring ${s3File.fileName} to ${dirPath}`);
+
         return new Promise((resolve, reject) => {
             const filePath = path.join(dirPath, 
                 s3File.fileNameNoExt());
@@ -55,19 +60,22 @@ class FileStore {
                 if (err) {
                     reject(err);
                 } else {
+                    log.info(`Untarred ${s3File.fileName} to ${dirPath}`);
                     resolve(new PredictionDir(filePath));
                 }
             });
         });
     }
 
-    buildResultDir(sufix) {
+    buildResultDir(suffix) {
         return new Promise((resolve, reject) => {
-            const resultDirPath = path.join(this.tmpDir, 'results_' + sufix);
+            const resultDirPath = path.join(this.tmpDir, 'results_' + suffix);
+            log.info('Creating result directory: ' + resultDirPath);
             fs.mkdir(resultDirPath, (err) => {
                 if (err) {
                     reject(err);
                 } else {
+                    log.info('Created result directory: ' + resultDirPath);
                     resolve(resultDirPath);
                 }
             });

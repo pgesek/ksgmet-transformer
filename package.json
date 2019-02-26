@@ -24,6 +24,7 @@
     "csv-writer": "^1.2.0",
     "del": "^3.0.0",
     "dotenv": "^6.1.0",
+    "fs-extra": "^7.0.1",
     "fstream": "^1.0.11",
     "n-readlines": "^1.0.0",
     "mkdir-recursive": "^0.4.0",
