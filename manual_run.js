@@ -1,5 +1,8 @@
-const Transformer = require('./src/transformer.js');
-const log = require('./src/util/log.js');
+const transformerRunner = require('./src/transformer_runner')
+const log = require('./src/util/log')
 
-const transformer = new Transformer();
-transformer.transform('2018_10_24_20_00_50').then(() => log.info('Script finished'));
+const START = 0;
+const END = 3;
+
+transformerRunner(START, END).then(() => 
+    log.info('Finished'));
