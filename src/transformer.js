@@ -134,10 +134,7 @@ class Transformer {
     }
 
     _verifyActualModDate(actualDataPrediction) {
-        const predDate = actualDataPrediction.getPredictionDate();
-        const madeOn = actualDataPrediction.getMadeOnDate();
-
-        const diff = Math.abs(dateDiffMinutes(predDate, madeOn));
+        const diff = actualDataPrediction.getMinuteDiff();
 
         if (diff > settings.ACTUAL_MAX_MINUTES_DIFF) {
             log.warn(`${actualDataPrediction.toString()}`

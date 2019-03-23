@@ -5,6 +5,7 @@ const settings = require('../util/settings.js');
 const PredictionType = require('../util/prediction_type.js');
 const formatPredictionDirPrefix = require('../util/date_util').formatPredictionDirPrefix;
 const dateDiffHours = require('../util/date_diff').dateDiffHours;
+const dateDiffMinutes = require('../util/date_diff').dateDiffMinutes;
 
 
 const CSV_PATH = `prognozy${path.sep}CSV${path.sep}`;
@@ -50,6 +51,11 @@ class Prediction {
 
     getMadeOnDate() {
         return this.getModDates().getFileModDate();
+    }
+
+    getMinuteDiff() {
+        let diff = dateDiffMinutes(this.getPredictionDate(), this.getMadeOnDate());
+        return Math.abs(diff);
     }
 
     toPath() {

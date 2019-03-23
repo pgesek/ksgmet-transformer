@@ -29,7 +29,8 @@ describe('Prediction Parser', () => {
             dirPath: 'spec/test-files/parser-test/data/actual',
             getPredictionDate: () => moment.tz('2018-10-29 11:00:00', 'Europe/Warsaw'),
             getMadeOnDate: () => moment.tz('2018-10-29 10:33:12', 'Europe/Warsaw'),
-            predictionType: PredictionType.EU
+            predictionType: PredictionType.EU,
+            getMinuteDiff: () => 10
         };
 
         const predictionParser = new PredictionParser(prediction, actual, tmpDir);

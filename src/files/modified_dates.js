@@ -11,7 +11,6 @@ class ModifiedDates {
             this.filePath, 'utf8'));
     }
 
-    // TODO: Fix me
     getFileModDate(file) {
         let key = file;
         if (!key) {

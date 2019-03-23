@@ -25,6 +25,8 @@ class PredictionParser {
         this.actualFiles = actualCsvFileBuilder.build();
 
         this.predictionType = prediction.predictionType;
+
+        this.actualMinuteDiff = actualData.getMinuteDiff();
     }
 
     async parsePredictionUnits() {
@@ -48,6 +50,8 @@ class PredictionParser {
                     predictionDt: this.predictionDt,
                     madeOnDt: this.madeOnDt
                 });
+
+                unit.actual_minute_diff = this.actualMinuteDiff;
 
                 resultFile.writeUnit(unit);
             }
