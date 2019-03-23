@@ -35,7 +35,7 @@ describe('Prediction Parser', () => {
         const predictionParser = new PredictionParser(prediction, actual, tmpDir);
         await predictionParser.parsePredictionUnits();
 
-        const expectedFile = path.join(tmpDir, 'prediction_on_2018_10_28_10_24_'
+        const expectedFile = path.join(tmpDir, 'prediction_25h_on_2018_10_28_10_24_'
             + 'for_2018_10_29_11_eu.csv');
         expect(fs.existsSync(expectedFile)).toBeTruthy();
         

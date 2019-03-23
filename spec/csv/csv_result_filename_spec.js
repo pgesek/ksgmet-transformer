@@ -15,7 +15,7 @@ describe('CSV Result Filename', () => {
             predictionForDt, PredictionType.PL);
 
         expect(name).toEqual('test' + path.sep + 
-            'prediction_on_2018_09_11_17_45' +
+            'prediction_489h_on_2018_09_11_17_45' +
             '_for_2018_10_02_02_pl.csv');
     });
 });
