@@ -2,7 +2,7 @@ const transformerRunner = require('./src/transformer_runner')
 const log = require('./src/util/log')
 
 const START = 0;
-const END = 3;
+const END = 1;
 
-transformerRunner(START, END).then(() => 
-    log.info('Finished'));
+Promise.all([transformerRunner(START, END)])
+    .then(() => log.info('Finished'));

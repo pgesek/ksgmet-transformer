@@ -7,7 +7,6 @@ const formatTarName = require('./util/date_util.js').formatTarName;
 const formatPredictionPath = require('./util/date_util.js').formatPredictionPath;
 const PredictionParser = require('./csv/prediction_parser');
 const S3Uploader = require('./s3/s3_uploader');
-const dateDiffMinutes = require('./util/date_diff.js').dateDiffMinutes;
 const PredictionType = require('./util/prediction_type');
 const path = require('path');
 
@@ -28,13 +27,15 @@ class Transformer {
         
         const files = await s3directory.listFiles();
 
-        return Promise.all(files.map(async s3file => {
+        await Promise.all(files.map(async s3file => {
             if (PredictionType.isPredictionTar(s3file.fileName)) {
                 await this._processTarFile(s3file);
             } else {
                 log.info('Skipping tar: ' + s3file.fileName);
             }
         }));
+
+        log.info('Finished transformation of directory: ' + directory);
     }
 
     async _processTarFile(s3file) {
@@ -48,7 +49,7 @@ class Transformer {
         log.info('Created prediction directory: ' + 
             predDir.filePath);
 
-        s3file.rmLocalFile();
+        await s3file.rmLocalFile();
 
         const resultDir = await this.store.buildResultDir(s3file.fileNameNoExt());
 
@@ -94,7 +95,7 @@ class Transformer {
             await actualDataFile.fetch(this.store, prefix);
             const actualDataDir = await this.store.untar(
                 prefix, actualDataFile);
-            actualDataFile.rmLocalFile();
+            await actualDataFile.rmLocalFile();
 
             const actualDataPath = formatPredictionPath(predictionDate,
                 predictionType);
