@@ -12,7 +12,18 @@ class S3Uploader {
         this.prefix = prefix;
     }
 
-    uploadFile(filePath) {
+    uploadFile(file) {
+        const filePath = file.filePath;
+        const storageClass = file.storageClass || 'STANDARD';
+        
+        let metadata = null;
+        if (file.madeOn && file.predictionDate) {
+            metadata = {
+                madeOn: file.madeOn.format(),
+                predictionDate: file.predictionDate.format()
+            }
+        }
+
         log.info(`Uploading ${filePath} to ${this.bucketName}`);
 
         const fileName = path.basename(filePath);
@@ -21,8 +32,9 @@ class S3Uploader {
         const params = {
             Body: fileStream,
             Bucket: this.bucketName,
-            Key: `${this.prefix}/${fileName}`,
-            StorageClass: 'STANDARD'
+            Key: `${this.prefix}/${file.prefix}/${fileName}`,
+            StorageClass: storageClass,
+            Metadata: metadata
         };
 
         return new Promise((resolve, reject) => {

@@ -52,7 +52,7 @@ class FileStore {
 
         return new Promise((resolve, reject) => {
             const filePath = path.join(dirPath, 
-                s3File.fileNameNoExt());
+                s3File.expandedFileNameNoExt());
             targz.decompress({
                 src: s3File.filePath,
                 dest: filePath

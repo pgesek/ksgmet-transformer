@@ -49,7 +49,7 @@ class Transformer {
         log.info('Created prediction directory: ' + 
             predDir.filePath);
 
-        await s3file.rmLocalFile();
+        // await s3file.rmLocalFile();
 
         const resultDir = await this.store.buildResultDir(s3file.fileNameNoExt());
 

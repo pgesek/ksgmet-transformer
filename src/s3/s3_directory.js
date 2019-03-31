@@ -70,7 +70,9 @@ class S3Directory {
                     });
                 }
 
-                log.info(`Found ${dirs.length} directories in ${this.path}`);
+                log.info(`Found ${dirs.length} directories in: ${this.path}`);
+
+                dirs = dirs.sort((a, b) => a.path.localeCompare(b.path));
 
                 resolve(dirs);
             });

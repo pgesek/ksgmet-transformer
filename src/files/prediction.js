@@ -1,9 +1,11 @@
 const path = require('path');
+const fs = require('fs');
 const ModifiedDates = require('./modified_dates.js');
 const moment = require('moment-timezone');
 const settings = require('../util/settings.js');
 const PredictionType = require('../util/prediction_type.js');
 const formatPredictionDirPrefix = require('../util/date_util').formatPredictionDirPrefix;
+const formatPredictionDateToSortedPath = require('../util/date_util').formatPredictionDateToSortedPath;
 const dateDiffHours = require('../util/date_diff').dateDiffHours;
 const dateDiffMinutes = require('../util/date_diff').dateDiffMinutes;
 
@@ -49,6 +51,10 @@ class Prediction {
         return new ModifiedDates(modDatePath);
     }
 
+    getModDate(fileName) {
+        return this.getModDates().getFileModDate(fileName);
+    }
+
     getMadeOnDate() {
         return this.getModDates().getFileModDate();
     }
@@ -72,6 +78,18 @@ class Prediction {
         const diff = dateDiffHours(this.getMadeOnDate(),
             this.getPredictionDate());
         return diff > 0;            
+    }
+
+    getPathInSortedBucket() {
+        const diff = dateDiffHours(this.getMadeOnDate(),
+            this.getPredictionDate());
+        return formatPredictionDateToSortedPath(
+            this.getPredictionDate(), diff); 
+    }
+
+    listCsvFiles() {
+        let allFiles = fs.readdirSync(this.dirPath);
+        return allFiles.filter(file => file.endsWith('.csv'));
     }
 }
 

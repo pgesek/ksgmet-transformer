@@ -36,5 +36,6 @@ describe('Prediction', () => {
             .toEqual('2018-10-30T02:00:00+01:00');
         expect(prediction.toPath()).toEqual('europe_long_csv_2018_10_30_02');
         expect(prediction.isFuturePrediction()).toBeTruthy();
+        expect(prediction.getPathInSortedBucket()).toEqual('2018_10_30_02/4h');
     });
 });

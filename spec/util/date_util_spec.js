@@ -2,6 +2,7 @@ const parseDirDate = require('../../src/util/date_util.js').parseDirDate;
 const formatTarName = require('../../src/util/date_util.js').formatTarName;
 const formatPredictionPath = require('../../src/util/date_util.js').formatPredictionPath;
 const formatPredictionDirPrefix = require('../../src/util/date_util.js').formatPredictionDirPrefix;
+const formatPredictionDateToSortedPath = require('../../src/util/date_util.js').formatPredictionDateToSortedPath;
 const moment = require('moment-timezone');
 const PredictionType = require('../../src/util/prediction_type.js');
 
@@ -53,5 +54,14 @@ describe('Date Utils', () => {
             date, PredictionType.PL);
 
         expect(predictionDirPrefix).toEqual('pl_csv_2019_03_04_05');
+    });
+
+    it('should format prediction name to name in the sorted bucket', () => {
+        const date = moment.tz('2019-03-04 19:17:33', 'Europe/Warsaw');
+        const length = 4;
+
+        const path = formatPredictionDateToSortedPath(date, length);
+
+        expect(path).toEqual('2019_03_04_19/4h');
     });
 });

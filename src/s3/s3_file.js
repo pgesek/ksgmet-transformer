@@ -38,6 +38,10 @@ class S3File {
         return this.fileName.replace(/\.[^/.]+$/, '');
     }
 
+    expandedFileNameNoExt() {
+        return this.fileNameNoExt() + '_from_' + this.path;
+    }
+
     rmLocalFile() {
         return new Promise((resolve, reject) => {
             if (this.filePath) {
@@ -47,7 +51,7 @@ class S3File {
                     } else {
                         resolve(true);
                     }
-                })
+                });
             } else {
                 resolve(false);
             }

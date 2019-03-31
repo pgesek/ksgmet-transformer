@@ -15,7 +15,7 @@ describe('Prediction Parser', () => {
     });
     
     afterAll(async () => {
-        //await del([tmpDir], { force: true});
+        await del([tmpDir], { force: true});
     });
 
     it('should parse predictions', async () => {

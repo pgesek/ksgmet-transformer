@@ -22,9 +22,15 @@ function formatPredictionDirPrefix(momentDate, predictionType) {
     return momentDate.format(dirFormat);
 }
 
+function formatPredictionDateToSortedPath(momentDate, predictionLength) {
+    const format = `YYYY_MM_DD_HH/[${predictionLength}h]`;
+    return momentDate.format(format);
+}
+
 module.exports = {
     parseDirDate,
     formatTarName,
     formatPredictionPath,
-    formatPredictionDirPrefix
+    formatPredictionDirPrefix,
+    formatPredictionDateToSortedPath
 };

@@ -1,3 +1,4 @@
+const del = require('del');
 const DirReader = require('./dir_reader.js');
 const Prediction = require('./prediction.js');
 const PredictionType = require('../util/prediction_type.js');
@@ -30,6 +31,10 @@ class PredictionDir {
 
     isEurope() {
         return this.filePath.indexOf(PredictionType.EU.TAR_PREFIX) >= 0;
+    }
+
+    async rm() {
+        await del([this.filePath], { force: true });
     }
 }
 

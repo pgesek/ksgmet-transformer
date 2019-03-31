@@ -28,6 +28,7 @@ const settings = Object.freeze({
 
     TARGET_BUCKET: getSetting('S3_TARGET_BUCKET_NAME', 'ksgmet-processed'),
     TARGET_PREFIX: getSetting('S3_TARGET_PREFIX', 'csv'),
+    TARGET_SORT_PREFIX: getSetting('S3_TARGET_SORT_PREFIX', 'ksgmet-csv')
 });
 
 if (settings.LOAD_AWS_CONFIG_FILE) {
