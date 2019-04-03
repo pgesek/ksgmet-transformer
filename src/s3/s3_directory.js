@@ -1,8 +1,7 @@
 const AWS = require('aws-sdk');
 const log = require('../util/log.js');
 const S3File = require('./s3_file.js');
-
-const s3 = new AWS.S3();
+const s3 = require('./s3_ref');
 
 class S3Directory {
     constructor(bucketName, path) {
@@ -33,8 +32,7 @@ class S3Directory {
 
                         return new S3File(name, 
                             this.path, 
-                            this.bucketName,
-                            s3);
+                            this.bucketName);
                     });
                 }
 

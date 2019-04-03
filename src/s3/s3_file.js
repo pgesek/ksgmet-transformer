@@ -1,11 +1,12 @@
 const fs = require('fs');
+const s3 = require('./s3_ref');
+
 
 class S3File {
-    constructor(fileName, path, bucketName, s3ref) {
+    constructor(fileName, path, bucketName) {
         this.fileName = fileName;
         this.path = path;
         this.bucketName = bucketName;
-        this.s3ref = s3ref;
     }
 
     async fetch(store, dirPrefix) {
@@ -15,7 +16,7 @@ class S3File {
         }
 
         return new Promise((resolve, reject) => {
-            this.s3ref.getObject(params, (err, data) => {
+            s3.getObject(params, (err, data) => {
                 if (err) {
                     reject(err);
                     return;

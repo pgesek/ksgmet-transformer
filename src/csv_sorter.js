@@ -4,6 +4,7 @@ const tagCsvFiles = require('./sort/csv_tagger');
 const S3Uploader = require('./s3/s3_uploader');
 const settings = require('./util/settings');
 const log = require('./util/log');
+const s3Retry = require('./s3/s3_retry');
 
 class CsvSorter {
 
@@ -19,7 +20,7 @@ class CsvSorter {
 
         log.info('Fetched directory: ' + directory);
 
-        let files = await s3directory.listFiles();
+        let files = await s3Retry(() => s3directory.listFiles());
 
         files = files.filter(tarFilter);
 
@@ -34,7 +35,7 @@ class CsvSorter {
     async processTarFile(s3TarFile) {
         log.info(`Processing file:${s3TarFile.path}/${s3TarFile.fileName}`);
         
-        await s3TarFile.fetch(this.store, s3TarFile.fileNameNoExt());
+        await s3Retry(() => s3TarFile.fetch(this.store, s3TarFile.fileNameNoExt()));
 
         const predDir = await this.store.untar(s3TarFile.fileNameNoExt(),
             s3TarFile);
@@ -60,7 +61,7 @@ class CsvSorter {
         const files = tagCsvFiles(prediction);
 
         await Promise.all(files.map(async file => {
-            await this.s3Uploader.uploadFile(file);
+            await s3Retry(() => this.s3Uploader.uploadFile(file));
         }))
 
         log.info('Finished processing prediction: ' + prediction.toString());
