@@ -9,7 +9,7 @@ function tagCsvFiles(prediction) {
         madeOn: prediction.getModDate(path.basename(file)),
         predictionDate: prediction.getPredictionDate(),
         storageClass: 'STANDARD_IA',
-        prefix: prediction.getPathInSortedBucket()
+        prefix: prediction.getPathInSortedBucket(path.basename(file))
     }));
 }
 

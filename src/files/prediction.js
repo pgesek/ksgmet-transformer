@@ -80,8 +80,8 @@ class Prediction {
         return diff > 0;            
     }
 
-    getPathInSortedBucket() {
-        const diff = dateDiffHours(this.getMadeOnDate(),
+    getPathInSortedBucket(fileName) {
+        const diff = dateDiffHours(this.getModDate(fileName),
             this.getPredictionDate());
         return formatPredictionDateToSortedPath(
             this.getPredictionDate(), diff); 

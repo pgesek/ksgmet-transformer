@@ -6,7 +6,7 @@ const settings = require('./src/util/settings');
 
 const sorter = new CsvSorter();
 
-const START = 33;
+const START = 0;
 const END = 100;
 
 runTransformations(START, END).then(() => log.info('Done'));
