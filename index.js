@@ -16,20 +16,18 @@ exports.handler = async event => {
     
     if (records) {
         log.info('Event has ' + records.length + ' records');
+        
         await Promise.all(records.map(async record => {
             const type = record.eventName;
-            if (type === PUT_EVENT) {
-                await handlePutEvent(record);
-            } else {
-                log.info('Not supported event type: ' + type);
-            }   
+            log.info('Handling record of event type: ' + type);
+            await handleCreateEvent(record);
         }));    
     } else {
         log.info('No records in event');
     }
 }
 
-async function handlePutEvent(record) {
+async function handleCreateEvent(record) {
     const bucket = record.s3.bucket.name;
     if (bucket === settings.S3_BUCKET_NAME) {
         log.info('Event from bucket: ' + bucket);
