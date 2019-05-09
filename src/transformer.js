@@ -10,6 +10,7 @@ const S3Uploader = require('./s3/s3_uploader');
 const PredictionType = require('./util/prediction_type');
 const path = require('path');
 
+
 class Transformer {
 
     constructor() {

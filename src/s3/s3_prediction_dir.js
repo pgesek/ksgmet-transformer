@@ -1,3 +1,6 @@
+const Prediction = require('../files/prediction');
+
+
 class S3PredictionDir {
     
     constructor(s3Dir, predDate, predLength) {
@@ -13,6 +16,10 @@ class S3PredictionDir {
 
         await Promise.all(files.map(file =>
             file.fetch(store, tmpDirPrefix)));
+
+        const fullPath = store.getFullTmpDirForPrefix(tmpDirPrefix);
+
+        return new Prediction(fullPath);
     }
 
     toString() {

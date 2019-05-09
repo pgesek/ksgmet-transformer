@@ -12,9 +12,8 @@ describe('Add dim values', () => {
         };
         const params = {
             predictionType: PredictionType.PL,
-
-            madeOnDt: moment.tz('2018-11-20 08:22:11', 'Europe/Warsaw'),
-            predictionDt: moment.tz('2018-11-20 17:00', 'Europe/Warsaw')
+            predictionDt: moment.tz('2018-11-20 17:00', 'Europe/Warsaw'),
+            predLength: 9
         };
         const expected = {
             val: 4.23,
@@ -24,14 +23,12 @@ describe('Add dim values', () => {
             x: 22,
             y: 31,
             prediction_timestamp: params.predictionDt.format(),
-            made_on_timestamp: params.madeOnDt.format(),
 
             prediction_date: 81,
             prediction_time: 1021,
-            made_on_date: 81,
-            made_on_time: 503,
             location: 28216,
-            type: 178
+            type: 178,
+            prediction_length: 9
         }
 
         const result = addDimValues(unit, params);

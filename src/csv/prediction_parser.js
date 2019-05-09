@@ -13,7 +13,6 @@ class PredictionParser {
         this.actualDataPath = actualData.dirPath;
         this.targetDir = targetDir;
 
-        this.madeOnDt = prediction.getMadeOnDate();
         this.predictionDt = prediction.getPredictionDate();
 
         const predictionCsvFileBuilder = new CsvFileBuilder(
@@ -24,18 +23,17 @@ class PredictionParser {
             this.actualDataPath, '_actual');
         this.actualFiles = actualCsvFileBuilder.build();
 
-        this.predictionType = prediction.predictionType;
+        this.predictionType = prediction.predType;
 
-        this.actualMinuteDiff = actualData.getMinuteDiff();
+        this.predLength = prediction.predLength;
+        this.actualDiff = actualData.predLength;
     }
 
     async parsePredictionUnits() {
         log.info(`Parsing prediction units of ${this.predictionPath}` + 
          ` against actual data from ${this.actualDataPath}`);
 
-        const resultFileName = csvResultFilename(this.targetDir,
-            this.madeOnDt, this.predictionDt,
-            this.predictionType);
+        const resultFileName = csvResultFilename(this.targetDir);
 
         const resultFile = new CsvResultFile(resultFileName);
 
@@ -48,10 +46,10 @@ class PredictionParser {
                 unit = addDimValues(unit, {
                     predictionType: this.predictionType,
                     predictionDt: this.predictionDt,
-                    madeOnDt: this.madeOnDt
+                    predLength: this.predLength
                 });
 
-                unit.actual_minute_diff = this.actualMinuteDiff;
+                unit.actual_diff = this.actualDiff;
 
                 resultFile.writeUnit(unit);
             }

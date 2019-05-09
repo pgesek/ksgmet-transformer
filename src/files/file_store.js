@@ -91,6 +91,10 @@ class FileStore {
         }
     }
 
+    getFullTmpDirForPrefix(prefix) {
+        return path.join(this.tmpDir, prefix);
+    }
+
     _tmpDir() {
         return fs.mkdtempSync(path.join(
             os.tmpdir(), TEMP_PREFIX));

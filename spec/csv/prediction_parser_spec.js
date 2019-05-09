@@ -22,22 +22,21 @@ describe('Prediction Parser', () => {
         const prediction = {
             dirPath: 'spec/test-files/parser-test/data/prediction',
             getPredictionDate: () => moment.tz('2018-10-29 11:00:00', 'Europe/Warsaw'),
-            getMadeOnDate: () => moment.tz('2018-10-28 10:24:27', 'Europe/Warsaw'),
-            predictionType: PredictionType.EU 
+            predType: PredictionType.EU,
+            predLength: 25
         };
         const actual = {
             dirPath: 'spec/test-files/parser-test/data/actual',
             getPredictionDate: () => moment.tz('2018-10-29 11:00:00', 'Europe/Warsaw'),
             getMadeOnDate: () => moment.tz('2018-10-29 10:33:12', 'Europe/Warsaw'),
-            predictionType: PredictionType.EU,
-            getMinuteDiff: () => 10
+            predType: PredictionType.EU,
+            predLength: -1
         };
 
         const predictionParser = new PredictionParser(prediction, actual, tmpDir);
         await predictionParser.parsePredictionUnits();
 
-        const expectedFile = path.join(tmpDir, 'prediction_25h_on_2018_10_28_10_24_'
-            + 'for_2018_10_29_11_eu.csv');
+        const expectedFile = path.join(tmpDir, 'aggregate.csv');
         expect(fs.existsSync(expectedFile)).toBeTruthy();
         
         const expectedContent = fs.readFileSync('spec/test-files/parser-test/expected.csv')
