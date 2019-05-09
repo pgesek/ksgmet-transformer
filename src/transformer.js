@@ -84,7 +84,7 @@ class Transformer {
             predictionType);
 
         if (actualDataS3Dir) {
-            log.info(`Using ${actualDataS3Dir.path} as actual data directory`);
+            log.info(`Using ${actualDataS3Dir.} as actual data directory`);
 
             const actualTarName = formatTarName(predictionDate, predictionType);
             const actualDataFile = actualDataS3Dir.getFileHandle(actualTarName);
@@ -103,7 +103,7 @@ class Transformer {
                 actualDataPath);
 
             if (!actualDataPrediction) {
-                log.warn(`Determined actual prediction file ${actualDataS3Dir.path}/` +
+                log.warn(`Determined actual prediction file ${actualDataS3Dir.name}/` +
                     `${actualTarName} does not contain expected prediction: ${actualDataPath}. ` +
                     `Skipping.`);
                 return;

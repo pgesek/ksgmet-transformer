@@ -6,8 +6,6 @@ const settings = require('./src/util/settings');
 const validateTarPath = require('./src/s3/tar_path_validator');
 const S3File = require('./src/s3/s3_file');
 
-const PUT_EVENT = 'ObjectCreated:Put';
-
 const plFilter = fileName => fileName.startsWith('pl_csv_');
 const sorter = new CsvSorter();
 

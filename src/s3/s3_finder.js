@@ -21,7 +21,7 @@ class S3Finder {
         const dirsByDiff = {};
         
         await Promise.all(dirs.map(async s3Dir => {
-            const dirName = s3Dir.path;
+            const dirName = s3Dir.name;
             const dirDt = parseDirDate(dirName);
             const diff = dateDiffMinutes(momentDate, dirDt);
 
@@ -58,7 +58,7 @@ class S3Finder {
                 }
             });
 
-            log.info(`Found best matching directory for ${momentDate.format()}: ${bestDir.path}`);
+            log.info(`Found best matching directory for ${momentDate.format()}: ${bestDir.name}`);
         } else {
             log.warn(`Didn't find any matching dir for ${momentDate.format()}`);
         }

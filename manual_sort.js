@@ -16,7 +16,7 @@ async function runTransformations(startIndex, endIndex) {
     const subDirs = await rootDir.listDirectories();
     
     for (let i = startIndex; i < endIndex; i += 1) {
-        const dir = subDirs[i].path;
+        const dir = subDirs[i].name;
         
         log.info('Sorting dir: ' + dir);
         

@@ -16,9 +16,9 @@ async function runTransformations(startIndex, endIndex) {
 }
 
 async function processDir(dir, transformer) {
-    log.info('Starting transformation on directory: ' + dir.path);
-    await transformer.transform(dir.path);
-    log.info('Finished transformation on directory: ' + dir.path);
+    log.info('Starting transformation on directory: ' + dir.name);
+    await transformer.transform(dir.name);
+    log.info('Finished transformation on directory: ' + dir.name);
 }
 
 module.exports = runTransformations;

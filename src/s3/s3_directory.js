@@ -3,17 +3,20 @@ const S3File = require('./s3_file.js');
 const s3 = require('./s3_ref');
 
 class S3Directory {
-    constructor(bucketName, path) {
+    constructor(bucketName, name, prefix) {
         this.bucketName = bucketName;
-        this.path = path;
+        this.name = name;
+        this.prefix = prefix;
+        
+        this.path = (prefix ? prefix + '/' : '') + name; 
     }
 
     listFiles() {
-        log.info(`Listing files in ${this.bucketName}, path: ${this.path}`);
+        log.info(`Listing files in ${this.bucketName}, path: ${this.name}`);
 
         const params = {
             Bucket: this.bucketName,
-            Prefix: this.path
+            Prefix: this.name
         };
 
         return new Promise((resolve, reject) => {
@@ -23,9 +26,9 @@ class S3Directory {
                     return;
                 }
 
-                let fileNames = [];
+                let files = [];
                 if (data.Contents) {
-                    fileNames = data.Contents.map(obj => {
+                    files = data.Contents.map(obj => {
                         const fromIndex = obj.Key.lastIndexOf('/') + 1;
                         const name = obj.Key.substr(fromIndex);
 
@@ -35,9 +38,9 @@ class S3Directory {
                     });
                 }
 
-                log.info(`Contents of ${this.path}: ${fileNames}`);
+                log.info(`Contents of ${this.name}: ${files}`);
 
-                resolve(fileNames);
+                resolve(files);
             });
         });
     }
@@ -68,14 +71,17 @@ class S3Directory {
                     if (data.CommonPrefixes) {
                         dirs = data.CommonPrefixes.map(prefix => {
                             let name = prefix.Prefix;
+                            
                             name = name.substr(0, name.lastIndexOf('/'));
-                            return new S3Directory(this.bucketName, name);
+                            name = name.substr(name.lastIndexOf('/') + 1, name.length);
+                            
+                            return new S3Directory(this.bucketName, name, this.path);
                         });
                     }
 
-                    log.info(`Found ${dirs.length} directories in: ${this.path}`);
+                    log.info(`Found ${dirs.length} directories in: ${this.name}`);
 
-                    dirs = dirs.sort((a, b) => a.path.localeCompare(b.path));
+                    dirs = dirs.sort((a, b) => a.name.localeCompare(b.name));
 
                     resolve({
                         dirs,
@@ -91,7 +97,7 @@ class S3Directory {
     }
 
     getFileHandle(filename) {
-        return new S3File(filename, this.path, this.bucketName, s3);
+        return new S3File(filename, this.name, this.bucketName, s3);
     }
 
     async countChildrenThatMatch(predicate) {
