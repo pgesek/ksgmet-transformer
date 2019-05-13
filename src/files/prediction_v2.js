@@ -1,3 +1,4 @@
+const moment = require('moment-timezone');
 const settings = require('../util/settings');
 
 
@@ -13,10 +14,6 @@ class PredictionV2 {
     getPredictionDate() {
         const format = 'YYYY_MM_DD_HH';
         return moment(this.predDate, format).tz(settings.TIMEZONE);
-    }
-
-    getMadeOnDate() {
-
     }
 }
 

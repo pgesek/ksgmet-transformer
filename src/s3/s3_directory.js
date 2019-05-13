@@ -16,7 +16,7 @@ class S3Directory {
 
         const params = {
             Bucket: this.bucketName,
-            Prefix: this.name
+            Prefix: this.path
         };
 
         return new Promise((resolve, reject) => {

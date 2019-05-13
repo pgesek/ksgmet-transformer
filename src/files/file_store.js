@@ -69,7 +69,7 @@ class FileStore {
 
     buildResultDir(suffix) {
         return new Promise((resolve, reject) => {
-            const resultDirPath = path.join(this.tmpDir, 'results_' + suffix);
+            const resultDirPath = path.join(this.tmpDir, suffix);
             log.info('Creating result directory: ' + resultDirPath);
             fs.mkdir(resultDirPath, (err) => {
                 if (err) {
@@ -82,10 +82,10 @@ class FileStore {
         });
     }
 
-    async rmResultDir(resultDirPath) {
-        if (resultDirPath) {
-            log.info('Cleaning result dir: ' + resultDirPath);
-            await del(resultDirPath, { force: true });
+    async rmDir(dirPath) {
+        if (dirPath) {
+            log.info('Cleaning result dir: ' + dirPath);
+            await del(dirPath, { force: true });
         } else {
             log.warn('Cannot clean result dir, it does not exist');
         }

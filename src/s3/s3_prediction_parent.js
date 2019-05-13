@@ -15,7 +15,7 @@ class S3PredictionParent {
             new S3PredictionDir(dir, this.s3Dir.name, 
                 this._parseLength(dir.name)));
 
-        return new S3PredictionCollection(predDirs, dir.name);
+        return new S3PredictionCollection(predDirs, this.s3Dir.name);
     }
 
     toString() {

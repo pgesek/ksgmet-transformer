@@ -1,4 +1,5 @@
-const Prediction = require('../files/prediction');
+const PredictionV2 = require('../files/prediction_v2');
+const PredictionType = require('../util/prediction_type');
 
 
 class S3PredictionDir {
@@ -10,16 +11,17 @@ class S3PredictionDir {
     }
 
     async download(store) {
-        const files = this.s3Dir.listFiles();
+        const files = await this.s3Dir.listFiles();
 
         const tmpDirPrefix = this.predDate + '_' + this.predLength;
 
-        await Promise.all(files.map(file =>
-            file.fetch(store, tmpDirPrefix)));
+        await Promise.all(files.map(async file =>
+            await file.fetch(store, tmpDirPrefix)));
 
         const fullPath = store.getFullTmpDirForPrefix(tmpDirPrefix);
 
-        return new Prediction(fullPath);
+        return new PredictionV2(fullPath, this.predLength, this.predDate,
+            PredictionType.PL);
     }
 
     toString() {

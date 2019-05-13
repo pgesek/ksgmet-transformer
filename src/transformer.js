@@ -69,7 +69,7 @@ class Transformer {
             s3file.fileName);
 
         if (settings.CLEAN_RESULT_DIR) {
-            await this.store.rmResultDir(s3file.fileName);
+            await this.store.rmDir(s3file.fileName);
         } else {
             log.info('Skipping removal of result dir');
         }
