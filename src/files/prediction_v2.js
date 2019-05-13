@@ -4,7 +4,7 @@ const settings = require('../util/settings');
 
 class PredictionV2 {
 
-    constructor(dirPath, predDate, predLength, predType) {
+    constructor(dirPath, predLength, predDate, predType) {
         this.dirPath = dirPath;
         this.predLength = predLength;
         this.predDate = predDate;
