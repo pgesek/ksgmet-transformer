@@ -55,7 +55,7 @@ class PredictionCollectionTransformer {
                 prefix: uploadPrefix
             };
 
-            //await this.s3Uploader.uploadFile(fileToUpload);
+            await this.s3Uploader.uploadFile(fileToUpload);
         } else {
             log.info('S3 Upload disabled, skipping');
         }

@@ -14,7 +14,8 @@ class CsvFileBuilder {
         const files = [];
         
         fs.readdirSync(this.dirPath).forEach(file => {
-            if (file.endsWith('.csv')) {
+            // ignore aggregate.csv in case this is a reupload situation
+            if (file.endsWith('.csv') && file !== 'aggregate.csv') {
                 let varName = file.replace('.csv', '');
                 varName = varName.toLowerCase();
                 varName += this.suffix;
