@@ -6,6 +6,8 @@ const S3Uploader = require('./src/s3/s3_uploader');
 const S3Directory = require('./src/s3/s3_directory');
 const S3PredictionParent = require('./src/s3/s3_prediction_parent');
 
+const START = 20;
+const END = 50;
 
 async function execute() {
     const fileStore = new FileStore();
@@ -14,15 +16,25 @@ async function execute() {
 
     const transformer = new PredictionCollectionTransformer(fileStore, s3Uploader);
 
-    const s3Dir = new S3Directory(settings.TARGET_BUCKET,
-        '2019_05_09_08', settings.TARGET_SORT_PREFIX);
+    const rootDir = new S3Directory(settings.TARGET_BUCKET, settings.TARGET_SORT_PREFIX);
+    const subDirs = await rootDir.listDirectories();
 
-    const predParent = new S3PredictionParent(s3Dir);
-    const predCollection = await predParent.listPredictionDirs();
+    log.info('Number of dirs to aggregate: ' + subDirs.length);
 
-    await transformer.transformCollection(predCollection);
+    for (let i = START; i < END; i += 1) {
+        const dir = subDirs[i];
 
-    log.info('Finished');
+        const predParent = new S3PredictionParent(dir);
+        const predCollection = await predParent.listPredictionDirs();4
+
+        log.info('Aggregating predictions from: ' + dir.name);
+
+        await transformer.transformCollection(predCollection);
+
+        log.info('Finished aggregating predictions from: ' + dir.name);
+    }
+
+    log.info('Finished execution');
 }
 
 execute().then(() => log.info('Done'));

@@ -60,8 +60,11 @@ class PredictionCollectionTransformer {
             log.info('S3 Upload disabled, skipping');
         }
 
-        //await this.store.rmDir(resultDir);
-        //await this.store.rmDir(pred.dirPath);
+        if (settings.CLEAN_RESULT_DIR) {
+            await this.store.rmDir(resultDir);
+        }
+
+        await this.store.rmDir(pred.dirPath);
     }
 }
 
