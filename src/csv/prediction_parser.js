@@ -97,7 +97,7 @@ class PredictionParser {
         });
 
         if (anyFileHadValue && filesNoValue.length > 0) {
-            throw 'Missing fields for prediction unit: ' + filesNoValue;
+            log.warn('Missing fields for prediction unit: ' + filesNoValue);
         }
 
         return anyFileHadValue ? unit : null;
