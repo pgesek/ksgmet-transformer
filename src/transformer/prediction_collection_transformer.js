@@ -1,7 +1,7 @@
 const log = require('../util/log.js');
 const settings = require('../util/settings.js');
 const PredictionParser = require('../csv/prediction_parser');
-
+const s3Retry = require('../s3/s3_retry.js');
 
 class PredictionCollectionTransformer {
     
@@ -24,7 +24,7 @@ class PredictionCollectionTransformer {
     }
 
     async _transformPredictions(predsToTransform, actualS3Pred) {
-        const actualPred = await actualS3Pred.download(this.store);
+        const actualPred = await s3Retry(() => actualS3Pred.download(this.store));
 
         log.info(`Fetched actual, diff: ${actualPred.predLength}h`)
 
@@ -41,7 +41,7 @@ class PredictionCollectionTransformer {
         const resultDirName = `results_${s3Pred.predDate}_${s3Pred.predLength}h` 
         const resultDir = await this.store.buildResultDir(resultDirName);
 
-        const pred = await s3Pred.download(this.store);
+        const pred = await s3Retry(() => s3Pred.download(this.store));
 
         const parser = new PredictionParser(pred, actualPred, resultDir); 
 
@@ -57,7 +57,7 @@ class PredictionCollectionTransformer {
                 prefix: uploadPrefix
             };
 
-            await this.s3Uploader.uploadFile(fileToUpload);
+            await s3Retry(() => this.s3Uploader.uploadFile(fileToUpload));
         } else {
             log.info('S3 Upload disabled, skipping');
         }
