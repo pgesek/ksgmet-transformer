@@ -25,7 +25,7 @@ async function execute() {
         const dir = subDirs[i];
 
         const predParent = new S3PredictionParent(dir);
-        const predCollection = await predParent.listPredictionDirs();4
+        const predCollection = await predParent.listPredictionDirs();
 
         log.info('Aggregating predictions from: ' + dir.name);
 

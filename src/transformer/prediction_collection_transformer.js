@@ -31,6 +31,8 @@ class PredictionCollectionTransformer {
         await Promise.all(predsToTransform.map(async pred => {
             await this._transformPrediction(pred, actualPred);
         }));
+
+        await store.rmDir(actualPred.dirPath);
     }
 
     async _transformPrediction(s3Pred, actualPred) {
