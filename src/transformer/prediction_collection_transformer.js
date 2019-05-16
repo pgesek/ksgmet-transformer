@@ -32,7 +32,7 @@ class PredictionCollectionTransformer {
             await this._transformPrediction(pred, actualPred);
         }));
 
-        await store.rmDir(actualPred.dirPath);
+        await this.store.rmDir(actualPred.dirPath);
     }
 
     async _transformPrediction(s3Pred, actualPred) {
