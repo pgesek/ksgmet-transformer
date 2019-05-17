@@ -100,13 +100,25 @@ class S3Directory {
         return new S3File(filename, this.name, this.bucketName, s3);
     }
 
-    async countChildrenThatMatch(predicate) {
+    async countChildren() {
+        const children = await this.listDirectories();
+        return children.length
+    }
+
+    async findChildrenThatMatch(predicate) {
         const children = await this.listDirectories();
 
-        const results = await Promise.all(children.map(async s3dir => 
-            await predicate(s3dir)));
+        const results = await Promise.all(children.map(async s3dir => { 
+            const shouldKeep = await predicate(s3dir);
+            return shouldKeep ? s3dir : null;
+        }));
 
-        return results.filter(val => val).length;
+        return results.filter(val => val);
+    }
+
+    async countChildrenThatMatch(predicate) {
+        const children =  await this.findChildrenThatMatch(predicate);
+        return children.length;
     }
 
     async hasChildrenThatMatch(predicate) {
