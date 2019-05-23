@@ -12,7 +12,7 @@ class S3Directory {
     }
 
     listFiles() {
-        log.info(`Listing files in ${this.bucketName}, path: ${this.name}`);
+        log.debug(`Listing files in ${this.bucketName}, path: ${this.name}`);
 
         const params = {
             Bucket: this.bucketName,
@@ -38,7 +38,7 @@ class S3Directory {
                     });
                 }
 
-                log.info(`Contents of ${this.name}: ${files}`);
+                log.debug(`Contents of ${this.name}: ${files}`);
 
                 resolve(files);
             });
@@ -46,7 +46,7 @@ class S3Directory {
     }
 
     async listDirectories() {
-        log.info(`Listing directories in ${this.bucketName}, path: ${this.path}`);
+        log.debug(`Listing directories in ${this.bucketName}, path: ${this.path}`);
 
         const params = {
             Bucket: this.bucketName,
@@ -79,7 +79,7 @@ class S3Directory {
                         });
                     }
 
-                    log.info(`Found ${dirs.length} directories in: ${this.name}`);
+                    log.debug(`Found ${dirs.length} directories in: ${this.name}`);
 
                     dirs = dirs.sort((a, b) => a.name.localeCompare(b.name));
 
@@ -97,7 +97,7 @@ class S3Directory {
     }
 
     getFileHandle(filename) {
-        return new S3File(filename, this.name, this.bucketName, s3);
+        return new S3File(filename, this.path, this.bucketName, s3);
     }
 
     async countChildren() {

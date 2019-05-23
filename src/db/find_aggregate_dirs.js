@@ -1,6 +1,6 @@
-const S3Directory = require('../src/s3/s3_directory');
-const settings = require('../src/util/settings');
-const log = require('../src/util/log');
+const S3Directory = require('../s3/s3_directory');
+const settings = require('../util/settings');
+const log = require('../util/log');
 //const moment = require('moment-timezone');
 
 async function findAggregateDirs() {
@@ -26,7 +26,8 @@ async function findAggregateDirs() {
         });
     }));
 
-    children = children.flat();
+    // flatten array
+    children = [].concat.apply([], children);
 
     log.info('Aggregates that will be used: ' + children.length);
 

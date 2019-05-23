@@ -1,14 +1,16 @@
-const log = require('./src/util/log')
-const PgClient = require('./src/db/pg_client');
+const log = require('./src/util/log');
+const DataLoader = require('./src/db/data_loader');
 
-const pgClient = new PgClient();
+const START = 0;
+const END = 1;
+
+const loader = new DataLoader();
 
 async function loadData() {
-    const date = await pgClient.dbNow();
-    log.info('Date is: ' + date.rows[0].now);
+    await loader.loadData(START, END);
 }
 
 loadData().then(async () => { 
-    await pgClient.end();
+    await loader.end();
     log.info('Done')
 });
