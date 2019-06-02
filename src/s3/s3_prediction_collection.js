@@ -7,13 +7,13 @@ class S3PredictionCollection {
         this.date = date;
     }
 
-    hasActual(threshold) {
-        return this.predDirs.length > 0 && 
-            this.predDirs[0].predLength <= threshold;
+    hasActual(threshold, index = 0) {
+        return this.predDirs.length > index &&
+            this.predDirs[index].predLength <= threshold;
     }
 
-    getActual(threshold) {
-        return this.hasActual(threshold) ? this.predDirs[0] : null;
+    getActual(threshold, index = 0) {
+        return this.hasActual(threshold, index) ? this.predDirs[index] : null;
     }
 
     getPredsWeCanVerify(threshold) {

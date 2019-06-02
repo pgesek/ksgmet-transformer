@@ -91,6 +91,16 @@ class FileStore {
         }
     }
 
+    async rmTmpDir(dirPath) {
+        const fullPath = path.join(this.tmpDir, dirPath);
+        if (dirPath) {
+            log.info('Cleaning result dir: ' + fullPath);
+            await del(fullPath, { force: true });
+        } else {
+            log.warn('Cannot clean result dir, it does not exist');
+        }
+    }
+
     getFullTmpDirForPrefix(prefix) {
         return path.join(this.tmpDir, prefix);
     }

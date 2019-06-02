@@ -1,6 +1,7 @@
 const S3Directory = require('../s3/s3_directory');
 const settings = require('../util/settings');
 const log = require('../util/log');
+const S3PredictionParent = require('../s3/s3_prediction_parent');
 //const moment = require('moment-timezone');
 
 async function findAggregateDirs() {
@@ -18,11 +19,26 @@ async function findAggregateDirs() {
             });
         }
     );
- 
+
     let children = await Promise.all(dirsToUse.map(async dir => {
-        return await dir.findChildrenThatMatch(childDir => {
+
+        const predParent = new S3PredictionParent(dir);
+        const predCollection = await predParent.listPredictionDirs();
+        const actual = predCollection.getActual(settings.ACTUAL_THRESHOLD);
+        const hasBadActual = await actual.isBad();
+
+        return await dir.findChildrenThatMatch(async childDir => {
+            if (hasBadActual) {
+                return false;
+            }
+
             const length = parseInt(childDir.name);
-            return length >= 4;  
+            const hasGoodLength = length >= 4;
+
+            const fileCount = await childDir.countFiles();
+            const hasBadFileCount = fileCount < 31;
+
+            return !hasBadFileCount && hasGoodLength;
         });
     }));
 

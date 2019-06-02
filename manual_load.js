@@ -1,8 +1,8 @@
 const log = require('./src/util/log');
 const DataLoader = require('./src/db/data_loader');
 
-const START = 68;
-const END = 600;
+const START = 250; //71-73 ?
+const END = 400;
 
 const loader = new DataLoader();
 

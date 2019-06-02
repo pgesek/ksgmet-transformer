@@ -105,6 +105,11 @@ class S3Directory {
         return children.length
     }
 
+    async countFiles() {
+        const files = await this.listFiles();
+        return files.length;
+    }
+
     async findChildrenThatMatch(predicate) {
         const children = await this.listDirectories();
 

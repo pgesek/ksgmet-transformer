@@ -24,6 +24,11 @@ class S3PredictionDir {
             PredictionType.PL);
     }
 
+    async isBad() {
+        const files = await this.s3Dir.listFiles();
+        return files.length < 31;
+    }
+
     toString() {
         return this.s3Dir.path;
     }
