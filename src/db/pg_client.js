@@ -19,7 +19,8 @@ class PgClient {
     }
 
     async deleteJunk() {
-        await this.pool.query('DELETE FROM fact_prediction WHERE tmin2m_actual = -999000000')
+        await this.pool.query('DELETE FROM fact_prediction WHERE tmin2m_actual = -999000000 OR tmin2m_predicted = -999000000' +
+            ' OR tmin2m_delta > 200')
     }
 
     async dbNow() {
