@@ -3,7 +3,7 @@ const CsvFile = require('../../src/csv/csv_file.js');
 describe('Csv File', () => {
     
     it('should iterate cell by cell', () => {
-        const file = new CsvFile('spec/test-files/test_data.csv');
+        const file = new CsvFile('spec/test-files/test_data.csv', 'test_data');
         
         let cells = [];
         let cell;

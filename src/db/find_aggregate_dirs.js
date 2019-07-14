@@ -2,21 +2,25 @@ const S3Directory = require('../s3/s3_directory');
 const settings = require('../util/settings');
 const log = require('../util/log');
 const S3PredictionParent = require('../s3/s3_prediction_parent');
-//const moment = require('moment-timezone');
+const moment = require('moment-timezone');
 
-async function findAggregateDirs() {
+async function findAggregateDirs(startDate, endDate) {
     const rootDir = new S3Directory(settings.TARGET_BUCKET,
         settings.TARGET_SORT_PREFIX);
 
     const dirsToUse = await rootDir.findChildrenThatMatch(
         async s3Dir => {
-            //const date = moment.tz(s3Dir.name, DIR_FORMAT, settings.TIMEZONE);
+            const date = moment.tz(s3Dir.name, DIR_FORMAT, settings.TIMEZONE);
             const childCount = await s3Dir.countChildren();
 
-            return await s3Dir.hasChildrenThatMatch(childDir => {
-                const length = parseInt(childDir.name);
-                return childCount > 1 && length <= 0; //&& date.isBefore('2019-01-01');
-            });
+            if (dateMatches(date, startDate, endDate)) {
+                return await s3Dir.hasChildrenThatMatch(childDir => {
+                    const length = parseInt(childDir.name);
+                    return childCount > 1 && length <= 0;
+                });
+            } else {
+                return false;
+            }
         }
     );
 
@@ -50,4 +54,20 @@ async function findAggregateDirs() {
     return children;
 }
 
-module.exports = findAggregateDirs;
+function dateMatches(date, startDate, endDate) {
+    if (!startDate && !endDate) {
+        return true;
+    }
+
+    let matches = true;
+    if (startDate) {
+        matches = date.isSameOrAfter(startDate, 'day');
+    }
+    if (endDate && matches) {
+        matches = date.isSameOrBefore(endDate, 'day');
+    }
+
+    return matches;
+}
+
+module.exports = { findAggregateDirs, dateMatches };

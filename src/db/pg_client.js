@@ -8,7 +8,7 @@ class PgClient {
 
     async loadAggregateFile(filePath, columns) {
         const columnString = columns.join(', ');
-        const query =  `COPY fact_prediction (${columnString})`
+        const query =  `COPY fact_prediction_2 (${columnString})`
             + ` FROM '${filePath}' DELIMITER ',' CSV HEADER`;
 
         log.debug('Executing query: ' + query);
@@ -19,7 +19,7 @@ class PgClient {
     }
 
     async deleteJunk() {
-        await this.pool.query('DELETE FROM fact_prediction WHERE tmin2m_actual = -999000000 OR tmin2m_predicted = -999000000' +
+        await this.pool.query('DELETE FROM fact_prediction_2 WHERE tmin2m_actual = -999000000 OR tmin2m_predicted = -999000000' +
             ' OR tmin2m_delta > 200')
     }
 
