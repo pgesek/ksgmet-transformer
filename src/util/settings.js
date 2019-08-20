@@ -30,7 +30,9 @@ const settings = Object.freeze({
     TARGET_PREFIX: getSetting('S3_TARGET_PREFIX', 'csv'),
     TARGET_SORT_PREFIX: getSetting('S3_TARGET_SORT_PREFIX', 'ksgmet-csv'),
 
-    ACTUAL_THRESHOLD: getSetting('ACTUAL_THRESHOLD', '4')
+    ACTUAL_THRESHOLD: getSetting('ACTUAL_THRESHOLD', '4'),
+
+    AGGREGATE_DIR: getSetting('AGGREGATE_DIR', 'aggregates')
 });
 
 if (settings.LOAD_AWS_CONFIG_FILE) {

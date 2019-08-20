@@ -1,6 +1,6 @@
 const fs = require('fs');
 const s3 = require('./s3_ref');
-
+const util = require('util');
 
 class S3File {
     constructor(fileName, path, bucketName) {
@@ -29,6 +29,19 @@ class S3File {
                     }).catch(err => reject(err));
             });
         });
+    }
+
+    async copyTo(targetBucket, targetPath, newName) {
+        const params = {
+            Bucket: targetBucket,
+            CopySource: `/${this.bucketName}/${this.path}/${this.fileName}`,
+            Key: `${targetPath}/${newName}`
+        };
+        
+        let s3copyPromisified = util.promisify(s3.copyObject);
+        s3copyPromisified = s3copyPromisified.bind(s3);
+
+        await s3copyPromisified(params);
     }
 
     toString() {
