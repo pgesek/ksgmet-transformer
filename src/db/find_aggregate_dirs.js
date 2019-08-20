@@ -4,6 +4,8 @@ const log = require('../util/log');
 const S3PredictionParent = require('../s3/s3_prediction_parent');
 const moment = require('moment-timezone');
 
+const DIR_FORMAT = 'YYYY_MM_DD_HH_mm_ss';
+
 async function findAggregateDirs(startDate, endDate) {
     const rootDir = new S3Directory(settings.TARGET_BUCKET,
         settings.TARGET_SORT_PREFIX);
