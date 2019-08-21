@@ -29,10 +29,16 @@ class S3Uploader {
         const fileName = path.basename(filePath);
         const fileStream = fs.createReadStream(filePath);
 
+        let key = this.prefix;
+        if (file.prefix) {
+            key += `/${file.prefix}`;
+        }
+        key += `/${fileName}`;
+
         const params = {
             Body: fileStream,
             Bucket: this.bucketName,
-            Key: `${this.prefix}/${file.prefix}/${fileName}`,
+            Key: key,
             StorageClass: storageClass,
             Metadata: metadata
         };
