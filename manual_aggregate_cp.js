@@ -2,11 +2,14 @@ const { findAggregateDirs } = require('./src/db/find_aggregate_dirs');
 const log = require('./src/util/log');
 const settings = require('./src/util/settings');
 
+const START = 2;
+const STOP = 30;
+
 async function cpAggregates() {
     const aggregateDirs = await findAggregateDirs();
     log.info(`Found ${aggregateDirs.length} aggregates`);
 
-    for (let i = 0; i < 2; i++) {
+    for (let i = START; i < STOP; i++) {
         const aggregateDir = aggregateDirs[i];
 
         const aggregate = aggregateDir.getFileHandle('aggregate.csv');
