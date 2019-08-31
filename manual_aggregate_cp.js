@@ -7,9 +7,8 @@ const settings = require('./src/util/settings');
 const FileStore = require('./src/files/file_store');
 const S3Uploader = require('./src/s3/s3_uploader');
 
-
-const START = 0;
-const STOP = 2;
+const START = 2;
+const STOP = 1000;
 
 const fileStore = new FileStore();
 const s3Uploader = new S3Uploader(settings.TARGET_BUCKET, 'aggregates');
@@ -73,7 +72,7 @@ async function fetchGzipUpload(s3File) {
             
             await s3Uploader.uploadFile(fileToUpload);
 
-            // await fileStore.rmTmpDir(dirPrefix);
+            await fileStore.rmTmpDir(dirPrefix);
 
             resolve(targetPath);
         });
