@@ -71,6 +71,22 @@ class S3File {
             }
         });
     }
+
+    async rmOnS3() {
+        const params = {
+            Bucket: this.bucketName,
+            Key: `${this.path}/${this.fileName}`
+        };
+
+        return new Promise((resolve, reject) => {
+            s3.deleteObject(params, (err, data) => {
+                if (err) {
+                    reject(err)
+                }
+                resolve(data);
+            });
+        });
+    }
 }
 
 module.exports = S3File;

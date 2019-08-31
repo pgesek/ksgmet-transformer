@@ -11,38 +11,53 @@ class S3Directory {
         this.path = (prefix ? prefix + '/' : '') + name; 
     }
 
-    listFiles() {
+    async listFiles() {
         log.debug(`Listing files in ${this.bucketName}, path: ${this.name}`);
 
         const params = {
             Bucket: this.bucketName,
-            Prefix: this.path
+            Prefix: this.path,
         };
 
-        return new Promise((resolve, reject) => {
-            s3.listObjectsV2(params, (err, data) => {
-                if (err) {
-                    reject(err);
-                    return;
-                }
+        let result = [];
+        let fetchResult = {};
+        do {
+            params.ContinuationToken = fetchResult.continuationToken;
 
-                let files = [];
-                if (data.Contents) {
-                    files = data.Contents.map(obj => {
-                        const fromIndex = obj.Key.lastIndexOf('/') + 1;
-                        const name = obj.Key.substr(fromIndex);
+            fetchResult = await new Promise((resolve, reject) => {
+                s3.listObjectsV2(params, (err, data) => {
+                    if (err) {
+                        reject(err);
+                        return;
+                    }
 
-                        return new S3File(name, 
-                            this.path, 
-                            this.bucketName);
-                    });
-                }
+                    let files = [];
+                    if (data.Contents) {
+                        files = data.Contents.map(obj => {
+                            const fromIndex = obj.Key.lastIndexOf('/') + 1;
+                            const name = obj.Key.substr(fromIndex);
 
-                log.debug(`Contents of ${this.name}: ${files}`);
+                            return new S3File(name, 
+                                this.path, 
+                                this.bucketName);
+                        });
+                    }
 
-                resolve(files);
+                    log.debug(`Contents of ${this.name}: ${files}`);
+
+                    const result = { 
+                        files,
+                        continuationToken:  data.NextContinuationToken
+                    };
+
+                    resolve(result);
+                });
             });
-        });
+
+            result = result.concat(fetchResult.files);
+        } while (fetchResult.continuationToken);
+
+        return result;
     }
 
     async listDirectories() {
