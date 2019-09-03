@@ -6,18 +6,33 @@ const log = require('./src/util/log');
 const settings = require('./src/util/settings');
 const FileStore = require('./src/files/file_store');
 const S3Uploader = require('./src/s3/s3_uploader');
+const moment = require('moment-timezone');
 
-const START = 2;
+const START = 0;
 const STOP = 1000;
+
+const FORMAT = 'YYYY_MM_DD_HH'
 
 const fileStore = new FileStore();
 const s3Uploader = new S3Uploader(settings.TARGET_BUCKET, 'aggregates');
 
 async function cpAggregates() {
-    const aggregateDirs = await findAggregateDirs();
+    let aggregateDirs = await findAggregateDirs();
     log.info(`Found ${aggregateDirs.length} aggregates`);
 
-    for (let i = START; i < STOP; i++) {
+    aggregateDirs = aggregateDirs.filter(aggregateDir => {
+        const dateElem = aggregateDir.prefix.replace('ksgmet-csv/', '')
+
+        const date = moment.tz(dateElem, FORMAT, settings.TIMEZONE);
+
+        return date.isAfter('2019-07-14', 'day') &&
+               date.isBefore('2019-07-16', 'day');
+    });
+
+    log.info('Filtered aggregate count: ' + aggregateDirs.length);
+
+    const endIndex = STOP < aggregateDirs.length ? STOP : aggregateDirs.length;
+    for (let i = START; i < endIndex; i++) {
         const aggregateDir = aggregateDirs[i];
 
         const aggregate = aggregateDir.getFileHandle('aggregate.csv');

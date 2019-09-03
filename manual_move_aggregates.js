@@ -2,7 +2,7 @@ const log = require('./src/util/log');
 const settings = require('./src/util/settings');
 const S3Directory = require('./src/s3/s3_directory');
 
-const TARGET_DIR = 'november';
+const TARGET_DIR = 'june';
 
 async function moveAggregates() {
     const rootDir = new S3Directory(settings.TARGET_BUCKET, 'aggregates', '');
@@ -12,15 +12,15 @@ async function moveAggregates() {
     log.info(`Fetched ${aggregates.length} aggregates`);
 
     aggregates = aggregates.filter(aggregate => {
-        const START = 'aggregate_2018_11_';
-        const END = 'aggregate_2018_12_'
+        const START = 'aggregate_2019_06_';
+        const END = 'aggregate_2019_07_'
         if (aggregate.fileName.startsWith(START) ||
             aggregate.fileName.startsWith(END)) {
 
             const day = parseInt(aggregate.fileName.substr(START.length, 2));
             const month = parseInt(aggregate.fileName.substr(START.length - 3, 2));
             
-            return (month === 12 && day <= 15) || (month === 11 && day >= 15);
+            return (month === 6 && day > 15) || (month === 7 && day <= 15);
         } else {
             return false;
         }
