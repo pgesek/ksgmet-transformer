@@ -20,7 +20,7 @@
     "rewiremock": "^3.13.0"
   },
   "dependencies": {
-    "aws-sdk": "^2.339.0",
+    "aws-sdk": "^2.814.0",
     "csv-writer": "^1.2.0",
     "del": "^3.0.0",
     "dotenv": "^6.1.0",
